@@ -1,0 +1,42 @@
+header {
+  width: 100%;
+  background-color: #1c1c21;
+}
+
+.appContainer {
+  max-width: 1440px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.headerLists {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.headerLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.headerLink:hover {
+  opacity: 0.5;
+}
+
+.active {
+  color: white;
+  pointer-events: none;
+  transition: none;
+}
