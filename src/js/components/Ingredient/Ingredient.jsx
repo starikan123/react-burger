@@ -7,13 +7,19 @@ import ingridientStyle from "./Ingredient.module.css";
 const Ingredient = ({ ingredient }) => {
   const { name, price, image } = ingredient;
 
-  return (
-    <div>
-      <img className={ingridientStyle.picture} src={image} alt={name} />
+  const priceDisplay = React.useMemo(() => {
+    return (
       <div className="mt-1 mb-1">
         <span className={`text text_type_digits-default mr-2`}>{price}</span>
         <CurrencyIcon type="primary" />
       </div>
+    );
+  }, [price]);
+
+  return (
+    <div>
+      <img className={ingridientStyle.picture} src={image} alt={name} />
+      {priceDisplay}
       <p className={`${ingridientStyle.text} text text_type_main-default`}>
         {name}
       </p>

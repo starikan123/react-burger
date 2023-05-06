@@ -8,10 +8,13 @@ import ingredientType from "../../utils/types.jsx";
 
 const BurgerIngredients = ({ ingredientslist, onClick }) => {
   const [current, setCurrent] = React.useState("bun");
-  const [selectedIngredients, setSelectedIngredients] = React.useState([]);
+
+  const filteredIngredients = React.useMemo(() => {
+    return ingredientslist.filter((item) => item.type === current);
+  }, [ingredientslist, current]);
 
   const handleSelectIngredient = (ingredient) => {
-    setSelectedIngredients([...selectedIngredients, ingredient]);
+    onClick(ingredient);
   };
 
   return (
@@ -38,19 +41,19 @@ const BurgerIngredients = ({ ingredientslist, onClick }) => {
         <IngredientsBoard
           title="Булки"
           menu="bun"
-          data={ingredientslist}
+          data={filteredIngredients}
           onClick={handleSelectIngredient}
         />
         <IngredientsBoard
           title="Соусы"
           menu="sauce"
-          data={ingredientslist}
+          data={filteredIngredients}
           onClick={handleSelectIngredient}
         />
         <IngredientsBoard
           title="Начинки"
           menu="main"
-          data={ingredientslist}
+          data={filteredIngredients}
           onClick={handleSelectIngredient}
         />
       </div>
