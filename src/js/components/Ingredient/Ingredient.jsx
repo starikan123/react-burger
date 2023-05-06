@@ -5,7 +5,7 @@ import {
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientType from "../../utils/types.jsx";
-import ingridientStyle from "./ingredient.module.css";
+import ingridientStyle from "./Ingredient.module.css";
 
 const Ingredient = ({ ingredient }) => {
   const { name, price, image } = ingredient;
