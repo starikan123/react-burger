@@ -51,7 +51,7 @@ const BurgerConstructor = ({ ingredientslist, menu, onClick }) => {
       {ingredientslist[0] && renderBurgerElement(ingredientslist[0], "bottom")}
       <div className={`${burgerConstructorsStyle.price} pt-10 pr-4`}>
         <div className={burgerConstructorsStyle.count}>
-          <p className="text text_type_digits-medium">167890</p>
+          <p className="text text_type_digits-medium">100500</p>
           <CurrencyIcon type="primary" />
         </div>
         <Button onClick={onClick} htmlType="button" type="primary" size="large">

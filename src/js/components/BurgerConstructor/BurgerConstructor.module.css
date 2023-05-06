@@ -3,13 +3,13 @@
 }
 
 .lists {
+  max-height: 45.4vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(133, 133, 173, 1) rgba(47, 47, 55, 1);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  list-style: none;
-  margin: 16px 0;
-  max-height: 45.4vh;
-  overflow-y: scroll;
 }
 
 .lists::-webkit-scrollbar {
@@ -18,7 +18,6 @@
 }
 
 .lists::-webkit-scrollbar-thumb {
-  height: 292px;
   background-color: rgba(133, 133, 173, 1);
 }
 
@@ -43,6 +42,7 @@
 
 .count {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
 }
