@@ -1,4 +1,4 @@
-import Ingredient from "../ingredient/ingredient.jsx";
+import Ingredient from "../Ingredient/ingredient";
 import IngredientsBoardStyle from "./IngredientsBoard.module.css";
 import PropTypes from "prop-types";
 import ingredientType from "../../utils/types.jsx";
