@@ -1,9 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  CurrencyIcon,
-  Counter,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
 
@@ -20,7 +17,6 @@ const Ingredient = ({ ingredient }) => {
       <p className={`${ingridientStyle.text} text text_type_main-default`}>
         {name}
       </p>
-      <Counter count={1} size="default" />
     </div>
   );
 };
