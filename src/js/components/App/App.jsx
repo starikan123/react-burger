@@ -4,6 +4,11 @@ import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
 import ingredientsData from "../../utils/data.jsx";
 import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
+import Api from "../../utils/api";
+
+const baseUrl = "https://norma.nomoreparties.space/api/ingredients";
+
+const api = new Api(baseUrl);
 
 function App() {
   const [burgerIngredients, setBurgerIngredients] = useState([]);
@@ -11,6 +16,15 @@ function App() {
   function handleIngredientClick(ingredient) {
     setBurgerIngredients([...burgerIngredients, ingredient]);
   }
+
+  React.useEffect(() => {
+    api
+      .getIngredients()
+      .then(({ data }) => {
+        setBurgerIngredients(data);
+      })
+      .catch(api.handleError);
+  }, []);
 
   return (
     <div className={`${appStyle.container} pb-10`}>
