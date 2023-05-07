@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
 import ingredientsData from "../../utils/data.jsx";
 import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 
-const App = () => {
-  const [burgerIngredients, setBurgerIngredients] = React.useState([]);
+function App() {
+  const [burgerIngredients, setBurgerIngredients] = useState([]);
 
-  const handleIngredientClick = (ingredient) => {
+  function handleIngredientClick(ingredient) {
     setBurgerIngredients([...burgerIngredients, ingredient]);
-  };
+  }
 
   return (
     <div className={`${appStyle.container} pb-10`}>
@@ -24,6 +24,6 @@ const App = () => {
       </main>
     </div>
   );
-};
+}
 
 export default App;

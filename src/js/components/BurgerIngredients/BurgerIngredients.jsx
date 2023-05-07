@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
-
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientsStyle from "./BurgerIngredients.module.css";
 import PropTypes from "prop-types";
 import ingredientType from "../../utils/types.jsx";
 
-const BurgerIngredients = ({ ingredientslist, onClick }) => {
-  const [current, setCurrent] = React.useState("bun");
+function BurgerIngredients({ ingredientslist, onClick }) {
+  const [current, setCurrent] = useState("bun");
 
-  const filteredIngredients = React.useMemo(() => {
+  const filteredIngredients = useMemo(() => {
     return ingredientslist.filter((item) => item.type === current);
   }, [ingredientslist, current]);
 
-  const handleSelectIngredient = (ingredient) => {
+  function handleSelectIngredient(ingredient) {
     onClick(ingredient);
-  };
+  }
 
   return (
     <section
@@ -59,7 +58,7 @@ const BurgerIngredients = ({ ingredientslist, onClick }) => {
       </div>
     </section>
   );
-};
+}
 
 BurgerIngredients.propTypes = {
   ingredientslist: PropTypes.arrayOf(ingredientType).isRequired,

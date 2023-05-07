@@ -9,7 +9,7 @@ import {
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 import ingredientType from "../../utils/types.jsx";
 
-const BurgerConstructor = ({ ingredientslist, menu, onClick }) => {
+function BurgerConstructor({ ingredientslist, menu, onClick }) {
   const filteredIngredients = useMemo(
     () =>
       ingredientslist
@@ -60,7 +60,7 @@ const BurgerConstructor = ({ ingredientslist, menu, onClick }) => {
       </div>
     </section>
   );
-};
+}
 
 BurgerConstructor.propTypes = {
   ingredientslist: PropTypes.arrayOf(ingredientType).isRequired,

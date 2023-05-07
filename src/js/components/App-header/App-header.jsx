@@ -7,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import headerStyle from "./App-header.module.css";
 
-const AppHeader = () => {
+function AppHeader() {
   const getLinkClassName = (props) =>
     `${headerStyle.headerLink} ${props.isActive ? headerStyle.active : ""} p-5`;
 
@@ -59,6 +59,6 @@ const AppHeader = () => {
       </div>
     </header>
   );
-};
+}
 
 export default AppHeader;
