@@ -22,10 +22,7 @@ export default class Api {
 
   async getIngredients() {
     try {
-      const ingredients = await this._request(
-        `${this._baseUrl}/ingredients`,
-        null
-      );
+      const ingredients = await this._request(`${this._baseUrl}`, null);
       return ingredients;
     } catch (err) {
       this.handleError(err);

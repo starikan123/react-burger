@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
-import ingredientsData from "../../utils/data.jsx";
 import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 import Api from "../../utils/api";
 
@@ -31,10 +30,10 @@ function App() {
       <AppHeader />
       <main className={appStyle.section}>
         <BurgerIngredients
-          ingredientslist={ingredientsData}
+          ingredientslist={burgerIngredients}
           onClick={handleIngredientClick}
         />
-        <BurgerConstructor ingredientslist={ingredientsData} menu="bun" />
+        <BurgerConstructor ingredientslist={burgerIngredients} menu="bun" />
       </main>
     </div>
   );
