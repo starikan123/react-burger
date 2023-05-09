@@ -9,8 +9,8 @@ function BurgerIngredients({ ingredientslist, onClick }) {
   const [current, setCurrent] = useState("bun");
 
   const filteredIngredients = useMemo(() => {
-    return ingredientslist.filter((item) => item.type === current);
-  }, [ingredientslist, current]);
+    return ingredientslist;
+  }, [ingredientslist]);
 
   function handleSelectIngredient(ingredient) {
     onClick(ingredient);
