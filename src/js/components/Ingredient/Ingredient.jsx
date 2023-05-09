@@ -4,7 +4,7 @@ import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components
 import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
 
-const Ingredient = ({ ingredient }) => {
+const Ingredient = ({ ingredient, onClick }) => {
   const { name, price, image } = ingredient;
 
   const priceDisplay = React.useMemo(() => {
@@ -17,7 +17,7 @@ const Ingredient = ({ ingredient }) => {
   }, [price]);
 
   return (
-    <div>
+    <div onClick={onClick}>
       <img className={ingridientStyle.picture} src={image} alt={name} />
       {priceDisplay}
       <p className={`${ingridientStyle.text} text text_type_main-default`}>
@@ -29,6 +29,7 @@ const Ingredient = ({ ingredient }) => {
 
 Ingredient.propTypes = {
   ingredient: ingredientType.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default Ingredient;

@@ -13,10 +13,10 @@ const IngredientsBoard = ({ data, title, menu, onClick }) => {
     <section className={`${IngredientsBoardStyle.board} pb-10`}>
       <h2 className="text text_type_main-medium m-0 pb-6">{title}</h2>
       <ul className={`${IngredientsBoardStyle.box} pr-4 pl-4`}>
-        {filteredData.map(({ _id, ...item }) => (
+        {filteredData.map((item) => (
           <li
             className={`${IngredientsBoardStyle.list} pl-4 pr-4 pb-6`}
-            key={_id}
+            key={item._id}
           >
             <button
               className={IngredientsBoardStyle.button}
@@ -24,7 +24,7 @@ const IngredientsBoard = ({ data, title, menu, onClick }) => {
                 onClick(item);
               }}
             >
-              <Ingredient ingredient={item} onClick={onClick} />
+              <Ingredient ingredient={item} />
             </button>
           </li>
         ))}
