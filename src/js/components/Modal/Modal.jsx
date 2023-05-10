@@ -5,6 +5,8 @@ import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import ModalStyle from "./Modal.module.css";
 import PropTypes from "prop-types";
 
+const modalRootElement = document.querySelector("#react-modals");
+
 const Modal = (props) => {
   const { children, onClose } = props;
 
@@ -41,7 +43,7 @@ const Modal = (props) => {
           </button>
           {content}
         </div>,
-        document.body
+        modalRootElement
       )}
       <ModalOverlay onClick={onClose} />
     </>
