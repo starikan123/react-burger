@@ -1,19 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientsStyle from "./BurgerIngredients.module.css";
-import PropTypes from "prop-types";
-import ingredientType from "../../utils/types.jsx";
+import { BurgerContext } from "../../services/BurgerContext";
 
-function BurgerIngredients({ ingredientslist, onClick }) {
-  const [current, setCurrent] = useState("bun");
-
-  const filteredIngredients = useMemo(() => {
-    return ingredientslist;
-  }, [ingredientslist]);
+function BurgerIngredients({ onClick, ingredientslist, addIngredient }) {
+  const [current, setCurrent] = React.useState("bun");
 
   function handleSelectIngredient(ingredient) {
-    onClick(ingredient);
+    addIngredient(ingredient);
   }
 
   return (
@@ -25,13 +21,25 @@ function BurgerIngredients({ ingredientslist, onClick }) {
         Соберите бургер
       </h1>
       <div className={ingredientsStyle.tabs}>
-        <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
+        <Tab
+          value="bun"
+          active={current === "bun"}
+          onClick={() => setCurrent("bun")}
+        >
           Булки
         </Tab>
-        <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
+        <Tab
+          value="sauce"
+          active={current === "sauce"}
+          onClick={() => setCurrent("sauce")}
+        >
           Соусы
         </Tab>
-        <Tab value="main" active={current === "main"} onClick={setCurrent}>
+        <Tab
+          value="main"
+          active={current === "main"}
+          onClick={() => setCurrent("main")}
+        >
           Начинки
         </Tab>
       </div>
@@ -40,19 +48,19 @@ function BurgerIngredients({ ingredientslist, onClick }) {
         <IngredientsBoard
           title="Булки"
           menu="bun"
-          data={filteredIngredients}
+          data={ingredientslist}
           onClick={handleSelectIngredient}
         />
         <IngredientsBoard
           title="Соусы"
           menu="sauce"
-          data={filteredIngredients}
+          data={ingredientslist}
           onClick={handleSelectIngredient}
         />
         <IngredientsBoard
           title="Начинки"
           menu="main"
-          data={filteredIngredients}
+          data={ingredientslist}
           onClick={handleSelectIngredient}
         />
       </div>
@@ -61,8 +69,9 @@ function BurgerIngredients({ ingredientslist, onClick }) {
 }
 
 BurgerIngredients.propTypes = {
-  ingredientslist: PropTypes.arrayOf(ingredientType).isRequired,
   onClick: PropTypes.func.isRequired,
+  ingredientslist: PropTypes.array.isRequired,
+  addIngredient: PropTypes.func.isRequired,
 };
 
 export default BurgerIngredients;

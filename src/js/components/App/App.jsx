@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
@@ -7,6 +7,7 @@ import Api from "../../utils/api";
 import OrderDetails from "../OrderDetails/OrderDetails.jsx";
 import Modal from "../Modal/Modal.jsx";
 import IngredientDetails from "../IngredientDetails/IngredientDetails.jsx";
+import { BurgerContext } from "../../services/BurgerContext";
 
 const baseUrl = "https://norma.nomoreparties.space/api/ingredients";
 const api = new Api(baseUrl);
@@ -16,7 +17,40 @@ function App() {
   const [showOpenOrderDetails, setShowOpenOrderDetails] = useState(false);
   const [showOpenIngredientDetails, setShowOpenIngredientDetails] =
     useState(false);
-  const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const [selectedIngredientForDetails, setSelectedIngredientForDetails] =
+    useState(null);
+  const [selectedIngredients, setSelectedIngredients] = useState({
+    bun: null,
+    other: [],
+  });
+
+  const addIngredient = (ingredient) => {
+    setSelectedIngredients((prevIngredients) => {
+      if (ingredient.type === "bun") {
+        return { ...prevIngredients, bun: ingredient };
+      }
+      return {
+        ...prevIngredients,
+        other: [...prevIngredients.other, ingredient],
+      };
+    });
+  };
+
+  const totalPrice = useMemo(() => {
+    let total = selectedIngredients.bun ? selectedIngredients.bun.price : 0;
+    total += selectedIngredients.other.reduce(
+      (sum, ingredient) => sum + ingredient.price,
+      0
+    );
+    return total;
+  }, [selectedIngredients]);
+
+  const contextValue = {
+    ingredientslist: burgerIngredients,
+    addIngredient,
+    selectedIngredients,
+    totalPrice,
+  };
 
   useEffect(() => {
     api
@@ -36,7 +70,7 @@ function App() {
   };
 
   const openIngredientDetailsModal = (ingredient) => {
-    setSelectedIngredient(ingredient);
+    setSelectedIngredientForDetails(ingredient);
     setShowOpenIngredientDetails(true);
   };
 
@@ -45,30 +79,29 @@ function App() {
   };
 
   return (
-    <div className={`${appStyle.container} pb-10`} id="react-modals">
-      <AppHeader />
-      <main className={appStyle.section}>
-        <BurgerIngredients
-          ingredientslist={burgerIngredients}
-          onClick={openIngredientDetailsModal}
-        />
-        <BurgerConstructor
-          onClick={openOrderModal}
-          ingredientslist={burgerIngredients}
-          menu="bun"
-        />
-      </main>
-      {showOpenOrderDetails && (
-        <Modal onClose={closeOrderModal}>
-          <OrderDetails />
-        </Modal>
-      )}
-      {showOpenIngredientDetails && (
-        <Modal onClose={closeIngredientDetailsModal}>
-          <IngredientDetails ingredient={selectedIngredient} />
-        </Modal>
-      )}
-    </div>
+    <BurgerContext.Provider value={contextValue}>
+      <div className={`${appStyle.container} pb-10`} id="react-modals">
+        <AppHeader />
+        <main className={appStyle.section}>
+          <BurgerIngredients
+            onClick={openIngredientDetailsModal}
+            ingredientslist={burgerIngredients}
+            addIngredient={addIngredient}
+          />
+          <BurgerConstructor onClick={openOrderModal} />
+        </main>
+        {showOpenOrderDetails && (
+          <Modal onClose={closeOrderModal}>
+            <OrderDetails />
+          </Modal>
+        )}
+        {showOpenIngredientDetails && (
+          <Modal onClose={closeIngredientDetailsModal}>
+            <IngredientDetails ingredient={selectedIngredientForDetails} />
+          </Modal>
+        )}
+      </div>
+    </BurgerContext.Provider>
   );
 }
 
