@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useReducer } from "react";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
@@ -12,45 +12,44 @@ import { BurgerContext } from "../../services/BurgerContext";
 const baseUrl = "https://norma.nomoreparties.space/api/ingredients";
 const api = new Api(baseUrl);
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "ADD_INGREDIENT":
+      if (action.ingredient.type === "bun") {
+        const totalPrice =
+          state.totalPrice -
+          (state.bun ? state.bun.price * 2 : 0) +
+          action.ingredient.price * 2;
+        return {
+          ...state,
+          bun: action.ingredient,
+          totalPrice: totalPrice,
+        };
+      } else {
+        return {
+          ...state,
+          other: [...state.other, action.ingredient],
+          totalPrice: state.totalPrice + action.ingredient.price,
+        };
+      }
+    default:
+      throw new Error(`Unknown action: ${action.type}`);
+  }
+};
+
 function App() {
-  const [burgerIngredients, setBurgerIngredients] = useState([]);
-  const [showOpenOrderDetails, setShowOpenOrderDetails] = useState(false);
+  const [burgerIngredients, setBurgerIngredients] = React.useState([]);
+  const [showOpenOrderDetails, setShowOpenOrderDetails] = React.useState(false);
   const [showOpenIngredientDetails, setShowOpenIngredientDetails] =
-    useState(false);
+    React.useState(false);
   const [selectedIngredientForDetails, setSelectedIngredientForDetails] =
-    useState(null);
-  const [selectedIngredients, setSelectedIngredients] = useState({
+    React.useState(null);
+
+  const [selectedIngredients, dispatch] = useReducer(reducer, {
     bun: null,
     other: [],
+    totalPrice: 0,
   });
-
-  const addIngredient = (ingredient) => {
-    setSelectedIngredients((prevIngredients) => {
-      if (ingredient.type === "bun") {
-        return { ...prevIngredients, bun: ingredient };
-      }
-      return {
-        ...prevIngredients,
-        other: [...prevIngredients.other, ingredient],
-      };
-    });
-  };
-
-  const totalPrice = useMemo(() => {
-    let total = selectedIngredients.bun ? selectedIngredients.bun.price * 2 : 0;
-    total += selectedIngredients.other.reduce(
-      (sum, ingredient) => sum + ingredient.price,
-      0
-    );
-    return total;
-  }, [selectedIngredients]);
-
-  const contextValue = {
-    ingredientslist: burgerIngredients,
-    addIngredient,
-    selectedIngredients,
-    totalPrice,
-  };
 
   useEffect(() => {
     api
@@ -60,6 +59,17 @@ function App() {
       })
       .catch(api.handleError);
   }, []);
+
+  const addIngredient = (ingredient) => {
+    dispatch({ type: "ADD_INGREDIENT", ingredient });
+  };
+
+  const contextValue = {
+    ingredientslist: burgerIngredients,
+    addIngredient,
+    selectedIngredients,
+    totalPrice: selectedIngredients.totalPrice,
+  };
 
   const openOrderModal = () => {
     setShowOpenOrderDetails(true);
