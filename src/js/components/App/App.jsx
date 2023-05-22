@@ -37,7 +37,7 @@ function App() {
   };
 
   const totalPrice = useMemo(() => {
-    let total = selectedIngredients.bun ? selectedIngredients.bun.price : 0;
+    let total = selectedIngredients.bun ? selectedIngredients.bun.price * 2 : 0;
     total += selectedIngredients.other.reduce(
       (sum, ingredient) => sum + ingredient.price,
       0

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   ConstructorElement,
@@ -19,7 +19,7 @@ function BurgerConstructor({ onClick }) {
       <div className="ml-8 pl-4 pr-4">
         <ConstructorElement
           type={type}
-          isLocked={type === "bun"}
+          isLocked={ingredient.type === "bun"}
           text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
           price={ingredient.price}
           thumbnail={ingredient.image_mobile}
@@ -28,16 +28,13 @@ function BurgerConstructor({ onClick }) {
     );
   };
 
-  const { bun, other } = selectedIngredients;
-  const bunTop = bun || other.find((ingredient) => ingredient.type === "bun");
+  const bun = useMemo(() => selectedIngredients.bun, [selectedIngredients]);
 
-  const filteredOtherIngredients = other.filter(
-    (ingredient) => ingredient.type !== "bun"
-  );
+  const filteredOtherIngredients = selectedIngredients.other;
 
   return (
     <section className={`${burgerConstructorsStyle.board} pt-25`}>
-      {bunTop && renderBurgerElement(bunTop, "top")}
+      {bun && renderBurgerElement(bun, "top")}
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
         {filteredOtherIngredients.map((ingredient) => (
           <li className={burgerConstructorsStyle.list} key={ingredient._id}>
@@ -51,7 +48,7 @@ function BurgerConstructor({ onClick }) {
           </li>
         ))}
       </ul>
-      {bunTop && renderBurgerElement(bunTop, "bottom")}
+      {bun && renderBurgerElement(bun, "bottom")}
       <div className={`${burgerConstructorsStyle.price} pt-10 pr-4`}>
         <div className={burgerConstructorsStyle.count}>
           <p className="text text_type_digits-medium">{totalPrice}</p>
