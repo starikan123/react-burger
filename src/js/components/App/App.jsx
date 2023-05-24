@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useMemo } from "react";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
@@ -66,19 +66,21 @@ function App() {
     dispatch({ type: "ADD_INGREDIENT", ingredient });
   };
 
-  const contextValue = {
-    ingredientslist: burgerIngredients,
-    addIngredient,
-    selectedIngredients,
-    totalPrice: selectedIngredients.totalPrice,
-    createOrder: () => {
-      const ingredientIds = [
-        ...selectedIngredients.other.map((item) => item._id),
-        selectedIngredients.bun._id,
-      ];
-      return api.createOrder(ingredientIds);
-    },
-  };
+  const contextValue = useMemo(() => {
+    return {
+      ingredientslist: burgerIngredients,
+      addIngredient,
+      selectedIngredients,
+      totalPrice: selectedIngredients.totalPrice,
+      createOrder: () => {
+        const ingredientIds = [
+          ...selectedIngredients.other.map((item) => item._id),
+          selectedIngredients.bun._id,
+        ];
+        return api.createOrder(ingredientIds);
+      },
+    };
+  }, [burgerIngredients, addIngredient, selectedIngredients, api]);
 
   const openOrderModal = (orderNumber) => {
     setOrderNumber(orderNumber);
@@ -99,9 +101,9 @@ function App() {
   };
 
   return (
-    <BurgerContext.Provider value={contextValue}>
-      <div className={`${appStyle.container} pb-10`} id="react-modals">
-        <AppHeader />
+    <div className={`${appStyle.container} pb-10`} id="react-modals">
+      <AppHeader />
+      <BurgerContext.Provider value={contextValue}>
         <main className={appStyle.section}>
           <BurgerIngredients
             onClick={openIngredientDetailsModal}
@@ -110,18 +112,18 @@ function App() {
           />
           <BurgerConstructor onClick={openOrderModal} />
         </main>
-        {showOpenOrderDetails && (
-          <Modal onClose={closeOrderModal}>
-            <OrderDetails orderNumber={orderNumber} />
-          </Modal>
-        )}
-        {showOpenIngredientDetails && (
-          <Modal onClose={closeIngredientDetailsModal}>
-            <IngredientDetails ingredient={selectedIngredientForDetails} />
-          </Modal>
-        )}
-      </div>
-    </BurgerContext.Provider>
+      </BurgerContext.Provider>
+      {showOpenOrderDetails && (
+        <Modal onClose={closeOrderModal}>
+          <OrderDetails orderNumber={orderNumber} />
+        </Modal>
+      )}
+      {showOpenIngredientDetails && (
+        <Modal onClose={closeIngredientDetailsModal}>
+          <IngredientDetails ingredient={selectedIngredientForDetails} />
+        </Modal>
+      )}
+    </div>
   );
 }
 

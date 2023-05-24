@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientsStyle from "./BurgerIngredients.module.css";
 import { BurgerContext } from "../../services/BurgerContext";
 
-function BurgerIngredients({ onClick, ingredientslist, addIngredient }) {
+function BurgerIngredients({ onClick }) {
   const [current, setCurrent] = React.useState("bun");
+
+  const { ingredientslist, addIngredient } = useContext(BurgerContext);
 
   function handleSelectIngredient(ingredient) {
     addIngredient(ingredient);
@@ -70,8 +72,6 @@ function BurgerIngredients({ onClick, ingredientslist, addIngredient }) {
 
 BurgerIngredients.propTypes = {
   onClick: PropTypes.func.isRequired,
-  ingredientslist: PropTypes.array.isRequired,
-  addIngredient: PropTypes.func.isRequired,
 };
 
 export default BurgerIngredients;
