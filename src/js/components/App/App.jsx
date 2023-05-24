@@ -9,7 +9,8 @@ import Modal from "../Modal/Modal.jsx";
 import IngredientDetails from "../IngredientDetails/IngredientDetails.jsx";
 import { BurgerContext } from "../../services/BurgerContext";
 
-const baseUrl = "https://norma.nomoreparties.space/api/ingredients";
+const baseUrl = "https://norma.nomoreparties.space/api";
+
 const api = new Api(baseUrl);
 
 const reducer = (state, action) => {
@@ -44,6 +45,7 @@ function App() {
     React.useState(false);
   const [selectedIngredientForDetails, setSelectedIngredientForDetails] =
     React.useState(null);
+  const [orderNumber, setOrderNumber] = React.useState(null);
 
   const [selectedIngredients, dispatch] = useReducer(reducer, {
     bun: null,
@@ -69,9 +71,17 @@ function App() {
     addIngredient,
     selectedIngredients,
     totalPrice: selectedIngredients.totalPrice,
+    createOrder: () => {
+      const ingredientIds = [
+        ...selectedIngredients.other.map((item) => item._id),
+        selectedIngredients.bun._id,
+      ];
+      return api.createOrder(ingredientIds);
+    },
   };
 
-  const openOrderModal = () => {
+  const openOrderModal = (orderNumber) => {
+    setOrderNumber(orderNumber);
     setShowOpenOrderDetails(true);
   };
 
@@ -102,7 +112,7 @@ function App() {
         </main>
         {showOpenOrderDetails && (
           <Modal onClose={closeOrderModal}>
-            <OrderDetails />
+            <OrderDetails orderNumber={orderNumber} />
           </Modal>
         )}
         {showOpenIngredientDetails && (

@@ -22,8 +22,24 @@ export default class Api {
 
   async getIngredients() {
     try {
-      const ingredients = await this._request(`${this._baseUrl}`, null);
+      const ingredients = await this._request(`${this._baseUrl}/ingredients`);
       return ingredients;
+    } catch (err) {
+      this.handleError(err);
+      return Promise.reject(err);
+    }
+  }
+
+  async createOrder(ingredientIds) {
+    try {
+      const order = await this._request(`${this._baseUrl}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients: ingredientIds }),
+      });
+      return order;
     } catch (err) {
       this.handleError(err);
       return Promise.reject(err);

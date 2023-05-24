@@ -12,7 +12,23 @@ import ingredientType from "../../utils/types";
 import { BurgerContext } from "../../services/BurgerContext";
 
 function BurgerConstructor({ onClick }) {
-  const { selectedIngredients, totalPrice } = React.useContext(BurgerContext);
+  const { selectedIngredients, totalPrice, createOrder } =
+    React.useContext(BurgerContext);
+
+  const handleOrderClick = async () => {
+    try {
+      const ingredientIds = selectedIngredients.other.map((i) => i._id);
+      if (selectedIngredients.bun) {
+        ingredientIds.push(selectedIngredients.bun._id);
+      }
+
+      const order = await createOrder(ingredientIds);
+
+      onClick(order.order.number);
+    } catch (error) {
+      console.error("Could not create order:", error);
+    }
+  };
 
   const renderBurgerElement = (ingredient, type) => {
     return (
@@ -54,7 +70,12 @@ function BurgerConstructor({ onClick }) {
           <p className="text text_type_digits-medium">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button onClick={onClick} htmlType="button" type="primary" size="large">
+        <Button
+          onClick={handleOrderClick}
+          htmlType="button"
+          type="primary"
+          size="large"
+        >
           Оформить заказ
         </Button>
       </div>
