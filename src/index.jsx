@@ -16,6 +16,7 @@ const composeEnhancers =
 const enhancer = composeEnhancers(applyMiddleware(thunk));
 
 const store = createStore(rootReducer, enhancer);
+//huina
 
 ReactDOM.render(
   <React.StrictMode>
