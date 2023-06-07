@@ -2,14 +2,16 @@ import {
   GET_INGREDIENTS_REQUEST,
   GET_INGREDIENTS_SUCCESS,
   GET_INGREDIENTS_FAILED,
-  ADD_INGREDIENT_TO_CONSTRUCTOR,
-  ADD_INGREDIENT,
   REMOVE_INGREDIENT,
   SET_CURRENT_INGREDIENT,
   RESET_CURRENT_INGREDIENT,
   PLACE_ORDER_REQUEST,
   PLACE_ORDER_SUCCESS,
   PLACE_ORDER_FAILED,
+  ADD_INGREDIENT_TO_CONSTRUCTOR,
+  RESET_ORDER,
+  SET_INGREDIENT_FOR_DETAILS,
+  REMOVE_CURRENT_INGREDIENT,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -42,25 +44,16 @@ export const burgerReducer = (state = initialState, action) => {
         ingredientsError: action.payload,
       };
     case ADD_INGREDIENT_TO_CONSTRUCTOR:
-      const currentIngredient = state.currentIngredient;
-      if (currentIngredient) {
-        return {
-          ...state,
-          selectedIngredients: [
-            ...state.selectedIngredients,
-            currentIngredient,
-          ],
-          currentIngredient: null,
-          totalPrice: state.totalPrice + currentIngredient.price,
-        };
-      }
-      return state;
-    case ADD_INGREDIENT:
+      const price = action.payload.reduce((acc, ingredient) => {
+        return acc + ingredient.price;
+      }, 0);
+
       return {
         ...state,
-        ingredients: [...state.ingredients, action.payload],
-        totalPrice: state.totalPrice + action.payload.price,
+        selectedIngredients: [...action.payload],
+        totalPrice: price,
       };
+
     case REMOVE_INGREDIENT:
       const removedIngredient = state.ingredients[action.payload];
       return {
@@ -85,6 +78,18 @@ export const burgerReducer = (state = initialState, action) => {
       };
     case PLACE_ORDER_FAILED:
       return { ...state, orderLoading: false, orderError: action.payload };
+    case RESET_ORDER:
+      return {
+        ...state,
+        selectedIngredients: [],
+        totalPrice: 0,
+        order: null,
+        orderNumber: null,
+      };
+    case SET_INGREDIENT_FOR_DETAILS:
+      return { ...state, currentIngredient: action.payload };
+    case REMOVE_CURRENT_INGREDIENT:
+      return { ...state, currentIngredient: null };
     default:
       return state;
   }

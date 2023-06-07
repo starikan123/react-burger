@@ -15,58 +15,63 @@ import OrderDetails from "../OrderDetails/OrderDetails";
 import Modal from "../Modal/Modal";
 import IngredientDetails from "../IngredientDetails/IngredientDetails";
 
+function useModal(openAction, closeAction) {
+  const dispatch = useDispatch();
+  const [isOpen, setOpen] = useState(false);
+
+  const openModal = (...args) => {
+    if (openAction) {
+      dispatch(openAction(...args));
+    }
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    if (closeAction) {
+      dispatch(closeAction());
+    }
+    setOpen(false);
+  };
+
+  return { isOpen, openModal, closeModal };
+}
+
 function App() {
   const dispatch = useDispatch();
-  const { ingredients, order, currentIngredient, selectedIngredients } =
-    useSelector((state) => state.burger);
-  const [isOrderModalOpen, setOrderModalOpen] = useState(false);
-  const [isIngredientDetailsModalOpen, setIngredientDetailsModalOpen] =
-    useState(false);
+
+  const { order, currentIngredient, selectedIngredients } = useSelector(
+    (state) => state.burger
+  );
+
+  const orderModal = useModal(placeOrder, resetOrder);
+  const ingredientDetailsModal = useModal(
+    setIngredientForDetails,
+    removeCurrentIngredient
+  );
 
   useEffect(() => {
     dispatch(getIngredients());
   }, [dispatch]);
 
-  const openOrderModal = () => {
-    if (selectedIngredients.length > 0) {
-      const ingredientIds = selectedIngredients.map((item) => item._id);
-      dispatch(placeOrder(ingredientIds));
-      setOrderModalOpen(true);
-    }
-  };
-
-  const closeOrderModal = () => {
-    dispatch(resetOrder());
-    setOrderModalOpen(false);
-  };
-
-  const openIngredientDetailsModal = (ingredient) => {
-    dispatch(setIngredientForDetails(ingredient));
-    setIngredientDetailsModalOpen(true);
-  };
-
-  const closeIngredientDetailsModal = () => {
-    dispatch(removeCurrentIngredient());
-    setIngredientDetailsModalOpen(false);
-  };
-
   return (
     <div className={`${appStyle.container} pb-10`} id="react-modals">
       <AppHeader />
       <main className={appStyle.section}>
-        <BurgerIngredients onClick={openIngredientDetailsModal} />
+        <BurgerIngredients onClick={ingredientDetailsModal.openModal} />
         <BurgerConstructor
-          onClick={openOrderModal}
+          onClick={orderModal.openModal}
           selectedIngredients={selectedIngredients}
         />
       </main>
-      {isOrderModalOpen && order && (
-        <Modal onClose={closeOrderModal}>
+
+      {orderModal.isOpen && order && (
+        <Modal onClose={orderModal.closeModal}>
           <OrderDetails orderNumber={order} />
         </Modal>
       )}
-      {isIngredientDetailsModalOpen && currentIngredient && (
-        <Modal onClose={closeIngredientDetailsModal}>
+
+      {ingredientDetailsModal.isOpen && currentIngredient && (
+        <Modal onClose={ingredientDetailsModal.closeModal}>
           <IngredientDetails ingredient={currentIngredient} />
         </Modal>
       )}

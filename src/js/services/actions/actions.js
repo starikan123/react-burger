@@ -2,7 +2,6 @@ import {
   GET_INGREDIENTS_REQUEST,
   GET_INGREDIENTS_SUCCESS,
   GET_INGREDIENTS_FAILED,
-  ADD_INGREDIENT,
   REMOVE_INGREDIENT,
   SET_CURRENT_INGREDIENT,
   RESET_CURRENT_INGREDIENT,
@@ -33,11 +32,6 @@ export const getIngredients = () => (dispatch, getState, api) => {
     });
 };
 
-export const addIngredient = (ingredient) => ({
-  type: ADD_INGREDIENT,
-  payload: ingredient,
-});
-
 export const removeIngredient = (ingredient) => ({
   type: REMOVE_INGREDIENT,
   payload: ingredient,
@@ -65,9 +59,26 @@ export const removeCurrentIngredient = () => ({
   type: REMOVE_CURRENT_INGREDIENT,
 });
 
-export const addIngredientToConstructor = (ingredient) => ({
-  type: ADD_INGREDIENT_TO_CONSTRUCTOR,
-});
+export const addIngredientToConstructor =
+  (ingredient) => (dispatch, getState) => {
+    const { selectedIngredients } = getState().burger;
+
+    if (ingredient.type === "bun") {
+      const updatedIngredients = selectedIngredients.filter(
+        (item) => item.type !== "bun"
+      );
+      updatedIngredients.push(ingredient);
+      dispatch({
+        type: ADD_INGREDIENT_TO_CONSTRUCTOR,
+        payload: updatedIngredients,
+      });
+    } else {
+      dispatch({
+        type: ADD_INGREDIENT_TO_CONSTRUCTOR,
+        payload: [...selectedIngredients, ingredient],
+      });
+    }
+  };
 
 export const placeOrder = (ingredients) => async (dispatch, getState, api) => {
   const { orderLoading } = getState().burger;

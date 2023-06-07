@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ConstructorElement,
   DragIcon,
@@ -7,7 +7,6 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
-import { useDispatch, useSelector } from "react-redux";
 import { placeOrder } from "../../services/actions/actions";
 
 function BurgerConstructor({ onClick }) {
@@ -83,21 +82,12 @@ function BurgerConstructor({ onClick }) {
           <p className="text text_type_digits-medium">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button
-          onClick={handleOrderClick}
-          htmlType="button"
-          type="primary"
-          size="large"
-        >
+        <Button onClick={handleOrderClick} type="primary" size="large">
           Оформить заказ
         </Button>
       </div>
     </section>
   );
 }
-
-BurgerConstructor.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
 
 export default BurgerConstructor;
