@@ -4,17 +4,13 @@ import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components
 import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
 import { useDispatch } from "react-redux";
-import {
-  addIngredientToConstructor,
-  setCurrentIngredient,
-} from "../../services/actions/actions";
+import { setCurrentIngredient } from "../../services/actions/actions";
 
 const Ingredient = ({ ingredient }) => {
   const dispatch = useDispatch();
 
   const handleIngredientClick = () => {
     dispatch(setCurrentIngredient(ingredient));
-    dispatch(addIngredientToConstructor(ingredient));
   };
 
   const priceDisplay = React.useMemo(() => {
