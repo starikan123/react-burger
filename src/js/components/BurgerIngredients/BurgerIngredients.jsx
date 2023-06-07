@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,34 @@ import ingredientsStyle from "./BurgerIngredients.module.css";
 
 const BurgerIngredients = () => {
   const dispatch = useDispatch();
+
+  const bunRef = useRef(null);
+  const sauceRef = useRef(null);
+  const mainRef = useRef(null);
+
+  const [activeTab, setActiveTab] = useState("bun");
+
+  const checkActiveTab = () => {
+    const bunPos = Math.abs(bunRef.current.getBoundingClientRect().top);
+    const saucePos = Math.abs(sauceRef.current.getBoundingClientRect().top);
+    const mainPos = Math.abs(mainRef.current.getBoundingClientRect().top);
+
+    if (bunPos < saucePos && bunPos < mainPos) {
+      setActiveTab("bun");
+    } else if (saucePos < bunPos && saucePos < mainPos) {
+      setActiveTab("sauce");
+    } else {
+      setActiveTab("main");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("scroll", checkActiveTab);
+
+    return () => {
+      document.removeEventListener("scroll", checkActiveTab);
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(getIngredients());
@@ -31,20 +59,24 @@ const BurgerIngredients = () => {
         Соберите бургер
       </h1>
       <div className={ingredientsStyle.tabs}>
-        <Tab value="bun" onClick={() => {}}>
+        <Tab value="bun" onClick={() => {}} active={activeTab === "bun"}>
           Булки
         </Tab>
-        <Tab value="sauce" onClick={() => {}}>
+        <Tab value="sauce" onClick={() => {}} active={activeTab === "sauce"}>
           Соусы
         </Tab>
-        <Tab value="main" onClick={() => {}}>
+        <Tab value="main" onClick={() => {}} active={activeTab === "main"}>
           Начинки
         </Tab>
       </div>
 
-      <div className={`${ingredientsStyle.scroll} mt-10`}>
+      <div
+        className={`${ingredientsStyle.scroll} mt-10`}
+        onScroll={checkActiveTab}
+      >
         {ingredients && (
           <IngredientsBoard
+            ref={bunRef}
             title="Булки"
             menu="bun"
             data={ingredients.filter((ingredient) => ingredient.type === "bun")}
@@ -53,6 +85,7 @@ const BurgerIngredients = () => {
         )}
         {ingredients && (
           <IngredientsBoard
+            ref={sauceRef}
             title="Соусы"
             menu="sauce"
             data={ingredients.filter(
@@ -63,6 +96,7 @@ const BurgerIngredients = () => {
         )}
         {ingredients && (
           <IngredientsBoard
+            ref={mainRef}
             title="Начинки"
             menu="main"
             data={ingredients.filter(
