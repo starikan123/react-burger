@@ -3,25 +3,41 @@ import PropTypes from "prop-types";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
+import { useDispatch } from "react-redux";
+import {
+  addIngredientToConstructor,
+  setCurrentIngredient,
+} from "../../services/actions/actions";
 
-const Ingredient = ({ ingredient, onClick }) => {
-  const { name, price, image } = ingredient;
+const Ingredient = ({ ingredient }) => {
+  const dispatch = useDispatch();
+
+  const handleIngredientClick = () => {
+    dispatch(setCurrentIngredient(ingredient));
+    dispatch(addIngredientToConstructor(ingredient));
+  };
 
   const priceDisplay = React.useMemo(() => {
     return (
       <div className="mt-1 mb-1">
-        <span className={`text text_type_digits-default mr-2`}>{price}</span>
+        <span className={`text text_type_digits-default mr-2`}>
+          {ingredient.price}
+        </span>
         <CurrencyIcon type="primary" />
       </div>
     );
-  }, [price]);
+  }, [ingredient.price]);
 
   return (
-    <div onClick={onClick}>
-      <img className={ingridientStyle.picture} src={image} alt={name} />
+    <div onClick={handleIngredientClick}>
+      <img
+        className={ingridientStyle.picture}
+        src={ingredient.image}
+        alt={ingredient.name}
+      />
       {priceDisplay}
       <p className={`${ingridientStyle.text} text text_type_main-default`}>
-        {name}
+        {ingredient.name}
       </p>
     </div>
   );
@@ -29,7 +45,6 @@ const Ingredient = ({ ingredient, onClick }) => {
 
 Ingredient.propTypes = {
   ingredient: ingredientType.isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default Ingredient;

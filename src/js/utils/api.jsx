@@ -1,13 +1,13 @@
 export default class Api {
   constructor(baseUrl) {
-    this._baseUrl = baseUrl;
+    this.baseUrl = baseUrl;
   }
 
-  _checkResponse(res) {
+  checkResponse(res) {
     if (res.ok) {
       return res.json();
     } else {
-      return Promise.reject(`Ошибка ${res.status}`);
+      throw new Error(`Error ${res.status}`);
     }
   }
 
@@ -15,24 +15,27 @@ export default class Api {
     console.error(err);
   }
 
-  async _request(url, options) {
+  async request(url, options) {
     const res = await fetch(url, options);
-    return this._checkResponse(res);
+    return this.checkResponse(res);
   }
 
   async getIngredients() {
     try {
-      const ingredients = await this._request(`${this._baseUrl}/ingredients`);
+      const response = await this.request(`${this.baseUrl}/ingredients`);
+      const ingredients = response.data.map((ingredient) => ({
+        ...ingredient,
+      }));
       return ingredients;
     } catch (err) {
       this.handleError(err);
-      return Promise.reject(err);
+      throw err;
     }
   }
 
   async createOrder(ingredientIds) {
     try {
-      const order = await this._request(`${this._baseUrl}/orders`, {
+      const order = await this.request(`${this.baseUrl}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +45,7 @@ export default class Api {
       return order;
     } catch (err) {
       this.handleError(err);
-      return Promise.reject(err);
+      throw err;
     }
   }
 }

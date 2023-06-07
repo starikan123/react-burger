@@ -1,9 +1,15 @@
+import React from "react";
 import ingredientStyle from "./IngredientDetails.module.css";
 import ingredientType from "../../utils/types.jsx";
+import { useSelector } from "react-redux";
 
-const IngredientDetails = ({ ingredient }) => {
-  const { name, calories, proteins, fat, image_large, carbohydrates } =
-    ingredient;
+const IngredientDetails = () => {
+  const currentIngredient = useSelector(
+    (state) => state.burger.currentIngredient
+  );
+
+  const { name, calories, proteins, fats, carbohydrates, image } =
+    currentIngredient;
 
   return (
     <>
@@ -12,12 +18,12 @@ const IngredientDetails = ({ ingredient }) => {
       >
         Детали ингредиента
       </h3>
-      <img className={ingredientStyle.img} alt={name} src={image_large} />
+      <img className={ingredientStyle.img} alt={name} src={image} />
       <p className="text text_type_main-medium pt-4 pb-8">{name}</p>
       <ul className={`${ingredientStyle.table} pb-15`}>
         <li className={ingredientStyle.list}>
           <p className="text text_type_main-default text_color_inactive">
-            Калории,ккал
+            Калории, ккал
           </p>
           <p className="text text_type_main-default">{calories}</p>
         </li>
@@ -31,7 +37,7 @@ const IngredientDetails = ({ ingredient }) => {
           <p className="text text_type_main-default text_color_inactive">
             Жиры, г
           </p>
-          <p className="text text_type_main-default">{fat}</p>
+          <p className="text text_type_main-default">{fats}</p>
         </li>
         <li className={ingredientStyle.list}>
           <p className="text text_type_main-default text_color_inactive">

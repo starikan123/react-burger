@@ -17,12 +17,7 @@ function AppHeader() {
         <nav>
           <ul className={headerStyle.headerLists}>
             <li>
-              <NavLink
-                to="/"
-                className={getLinkClassName}
-                activeClassName=""
-                isActive={true}
-              >
+              <NavLink to="/" className={getLinkClassName} activeClassName="">
                 <BurgerIcon type="primary" />
                 <span className="text text_type_main-default pl-2">
                   Конструктор
@@ -34,7 +29,6 @@ function AppHeader() {
                 to="orders"
                 className={getLinkClassName}
                 activeClassName=""
-                isActive={true}
               >
                 <ListIcon type="secondary" />
                 <span className="text text_type_main-default pl-2">
@@ -45,12 +39,7 @@ function AppHeader() {
           </ul>
         </nav>
         <Logo />
-        <NavLink
-          to="profile"
-          className={getLinkClassName}
-          activeClassName=""
-          isActive={true}
-        >
+        <NavLink to="profile" className={getLinkClassName} activeClassName="">
           <ProfileIcon type="secondary" />
           <span className="text text_type_main-default pl-2">
             Личный кабинет

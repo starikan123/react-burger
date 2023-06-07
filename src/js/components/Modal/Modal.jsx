@@ -4,19 +4,22 @@ import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import ModalStyle from "./Modal.module.css";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { removeCurrentIngredient } from "../../services/actions/actions";
 
 const modalRootElement = document.querySelector("#react-modals");
 
 const Modal = (props) => {
-  const { children, onClose } = props;
+  const dispatch = useDispatch();
 
   const handleClose = React.useCallback(
     (e) => {
       if (e.key === "Escape") {
-        onClose();
+        dispatch(removeCurrentIngredient());
+        props.onClose();
       }
     },
-    [onClose]
+    [props.onClose, dispatch]
   );
 
   React.useEffect(() => {
@@ -26,14 +29,14 @@ const Modal = (props) => {
 
   const closeIcon = <CloseIcon type="primary" />;
 
-  const content = React.Children.only(children);
+  const content = React.Children.only(props.children);
 
   return (
     <>
       {ReactDOM.createPortal(
         <div className={`${ModalStyle.container} pr-10 pl-10`}>
           <button
-            onClick={onClose}
+            onClick={props.onClose}
             className={`${ModalStyle.leave} pt-15 pr-10`}
             type="button"
             title="Закрыть окно"
@@ -45,7 +48,7 @@ const Modal = (props) => {
         </div>,
         modalRootElement
       )}
-      <ModalOverlay onClick={onClose} />
+      <ModalOverlay onClick={props.onClose} />
     </>
   );
 };

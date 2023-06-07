@@ -1,126 +1,73 @@
-import React, { useEffect, useReducer, useMemo } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getIngredients,
+  placeOrder,
+  resetOrder,
+  setIngredientForDetails,
+  removeCurrentIngredient,
+} from "../../services/actions/actions";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
 import BurgerIngredients from "../BurgerIngredients/BurgerIngredients";
 import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
-import Api from "../../utils/api";
-import OrderDetails from "../OrderDetails/OrderDetails.jsx";
-import Modal from "../Modal/Modal.jsx";
-import IngredientDetails from "../IngredientDetails/IngredientDetails.jsx";
-import { BurgerContext } from "../../services/BurgerContext";
-
-const baseUrl = "https://norma.nomoreparties.space/api";
-
-const api = new Api(baseUrl);
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "ADD_INGREDIENT":
-      if (action.ingredient.type === "bun") {
-        const totalPrice =
-          state.totalPrice -
-          (state.bun ? state.bun.price * 2 : 0) +
-          action.ingredient.price * 2;
-        return {
-          ...state,
-          bun: action.ingredient,
-          totalPrice: totalPrice,
-        };
-      } else {
-        return {
-          ...state,
-          other: [...state.other, action.ingredient],
-          totalPrice: state.totalPrice + action.ingredient.price,
-        };
-      }
-    default:
-      throw new Error(`Unknown action: ${action.type}`);
-  }
-};
+import OrderDetails from "../OrderDetails/OrderDetails";
+import Modal from "../Modal/Modal";
+import IngredientDetails from "../IngredientDetails/IngredientDetails";
 
 function App() {
-  const [burgerIngredients, setBurgerIngredients] = React.useState([]);
-  const [showOpenOrderDetails, setShowOpenOrderDetails] = React.useState(false);
-  const [showOpenIngredientDetails, setShowOpenIngredientDetails] =
-    React.useState(false);
-  const [selectedIngredientForDetails, setSelectedIngredientForDetails] =
-    React.useState(null);
-  const [orderNumber, setOrderNumber] = React.useState(null);
-
-  const [selectedIngredients, dispatch] = useReducer(reducer, {
-    bun: null,
-    other: [],
-    totalPrice: 0,
-  });
+  const dispatch = useDispatch();
+  const { ingredients, order, currentIngredient, selectedIngredients } =
+    useSelector((state) => state.burger);
+  const [isOrderModalOpen, setOrderModalOpen] = useState(false);
+  const [isIngredientDetailsModalOpen, setIngredientDetailsModalOpen] =
+    useState(false);
 
   useEffect(() => {
-    api
-      .getIngredients()
-      .then(({ data }) => {
-        setBurgerIngredients(data);
-      })
-      .catch(api.handleError);
-  }, []);
+    dispatch(getIngredients());
+  }, [dispatch]);
 
-  const addIngredient = (ingredient) => {
-    dispatch({ type: "ADD_INGREDIENT", ingredient });
-  };
-
-  const contextValue = useMemo(() => {
-    return {
-      ingredientslist: burgerIngredients,
-      addIngredient,
-      selectedIngredients,
-      totalPrice: selectedIngredients.totalPrice,
-      createOrder: () => {
-        const ingredientIds = [
-          ...selectedIngredients.other.map((item) => item._id),
-          selectedIngredients.bun._id,
-        ];
-        return api.createOrder(ingredientIds);
-      },
-    };
-  }, [burgerIngredients, addIngredient, selectedIngredients, api]);
-
-  const openOrderModal = (orderNumber) => {
-    setOrderNumber(orderNumber);
-    setShowOpenOrderDetails(true);
+  const openOrderModal = () => {
+    if (selectedIngredients.length > 0) {
+      const ingredientIds = selectedIngredients.map((item) => item._id);
+      dispatch(placeOrder(ingredientIds));
+      setOrderModalOpen(true);
+    }
   };
 
   const closeOrderModal = () => {
-    setShowOpenOrderDetails(false);
+    dispatch(resetOrder());
+    setOrderModalOpen(false);
   };
 
   const openIngredientDetailsModal = (ingredient) => {
-    setSelectedIngredientForDetails(ingredient);
-    setShowOpenIngredientDetails(true);
+    dispatch(setIngredientForDetails(ingredient));
+    setIngredientDetailsModalOpen(true);
   };
 
   const closeIngredientDetailsModal = () => {
-    setShowOpenIngredientDetails(false);
+    dispatch(removeCurrentIngredient());
+    setIngredientDetailsModalOpen(false);
   };
 
   return (
     <div className={`${appStyle.container} pb-10`} id="react-modals">
       <AppHeader />
-      <BurgerContext.Provider value={contextValue}>
-        <main className={appStyle.section}>
-          <BurgerIngredients
-            onClick={openIngredientDetailsModal}
-            ingredientslist={burgerIngredients}
-            addIngredient={addIngredient}
-          />
-          <BurgerConstructor onClick={openOrderModal} />
-        </main>
-      </BurgerContext.Provider>
-      {showOpenOrderDetails && (
+      <main className={appStyle.section}>
+        <BurgerIngredients onClick={openIngredientDetailsModal} />
+        <BurgerConstructor
+          onClick={openOrderModal}
+          selectedIngredients={selectedIngredients}
+        />
+      </main>
+      {isOrderModalOpen && order && (
         <Modal onClose={closeOrderModal}>
-          <OrderDetails orderNumber={orderNumber} />
+          <OrderDetails orderNumber={order} />
         </Modal>
       )}
-      {showOpenIngredientDetails && (
+      {isIngredientDetailsModalOpen && currentIngredient && (
         <Modal onClose={closeIngredientDetailsModal}>
-          <IngredientDetails ingredient={selectedIngredientForDetails} />
+          <IngredientDetails ingredient={currentIngredient} />
         </Modal>
       )}
     </div>

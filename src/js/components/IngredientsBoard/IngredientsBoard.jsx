@@ -24,7 +24,7 @@ const IngredientsBoard = ({ data, title, menu, onClick }) => {
                 onClick(item);
               }}
             >
-              <Ingredient ingredient={item} />
+              <Ingredient ingredient={item} onClick={onClick} />
             </button>
           </li>
         ))}
