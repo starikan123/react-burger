@@ -14,6 +14,8 @@ import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 import OrderDetails from "../OrderDetails/OrderDetails";
 import Modal from "../Modal/Modal";
 import IngredientDetails from "../IngredientDetails/IngredientDetails";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -54,28 +56,30 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className={`${appStyle.container} pb-10`} id="react-modals">
-      <AppHeader />
-      <main className={appStyle.section}>
-        <BurgerIngredients onClick={ingredientDetailsModal.openModal} />
-        <BurgerConstructor
-          onClick={orderModal.openModal}
-          selectedIngredients={selectedIngredients}
-        />
-      </main>
+    <DndProvider backend={HTML5Backend}>
+      <div className={`${appStyle.container} pb-10`} id="react-modals">
+        <AppHeader />
+        <main className={appStyle.section}>
+          <BurgerIngredients onClick={ingredientDetailsModal.openModal} />
+          <BurgerConstructor
+            onClick={orderModal.openModal}
+            selectedIngredients={selectedIngredients}
+          />
+        </main>
 
-      {orderModal.isOpen && order && (
-        <Modal onClose={orderModal.closeModal}>
-          <OrderDetails orderNumber={order} />
-        </Modal>
-      )}
+        {orderModal.isOpen && order && (
+          <Modal onClose={orderModal.closeModal}>
+            <OrderDetails orderNumber={order} />
+          </Modal>
+        )}
 
-      {ingredientDetailsModal.isOpen && currentIngredient && (
-        <Modal onClose={ingredientDetailsModal.closeModal}>
-          <IngredientDetails ingredient={currentIngredient} />
-        </Modal>
-      )}
-    </div>
+        {ingredientDetailsModal.isOpen && currentIngredient && (
+          <Modal onClose={ingredientDetailsModal.closeModal}>
+            <IngredientDetails ingredient={currentIngredient} />
+          </Modal>
+        )}
+      </div>
+    </DndProvider>
   );
 }
 

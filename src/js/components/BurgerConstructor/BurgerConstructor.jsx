@@ -6,16 +6,24 @@ import {
   CurrencyIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useDrop } from "react-dnd";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
-import { placeOrder } from "../../services/actions/actions";
+import {
+  addIngredientToConstructor,
+  placeOrder,
+  removeIngredient,
+} from "../../services/actions/actions";
 
 function BurgerConstructor({ onClick }) {
   const dispatch = useDispatch();
   const selectedIngredients = useSelector(
     (state) => state.burger.selectedIngredients
   );
-  const order = useSelector((state) => state.burger.order);
-  const totalPrice = useSelector((state) => state.burger.totalPrice);
+
+  const [, dropRef] = useDrop({
+    accept: "ingredient",
+    drop: (item) => dispatch(addIngredientToConstructor(item.ingredient)),
+  });
 
   const handleOrderClick = async () => {
     try {
@@ -27,12 +35,22 @@ function BurgerConstructor({ onClick }) {
     }
   };
 
+  const handleRemoveClick = (ingredient) => {
+    dispatch(removeIngredient(ingredient));
+  };
+
   const renderBurgerElement = (ingredient, type, index) => {
     return (
       <div
         className="ml-8 pl-4 pr-4"
         key={`${ingredient._id}-${type}-${index}`}
       >
+        <div>
+          <DragIcon
+            type="primary"
+            onClick={() => handleRemoveClick(ingredient)}
+          />
+        </div>
         <ConstructorElement
           type={type}
           isLocked={ingredient.type === "bun"}
@@ -57,16 +75,23 @@ function BurgerConstructor({ onClick }) {
     );
   }, [selectedIngredients]);
 
+  const totalPrice = useMemo(() => {
+    return selectedIngredients.reduce((acc, cur) => acc + cur.price, 0);
+  }, [selectedIngredients]);
+
   return (
-    <section className={`${burgerConstructorsStyle.board} pt-25`}>
-      {bun && renderBurgerElement(bun, "top")}
+    <section className={`${burgerConstructorsStyle.board} pt-25`} ref={dropRef}>
+      {bun && renderBurgerElement(bun, "top", 0)}
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
         {otherIngredients.map((ingredient, index) => (
           <li
             className={burgerConstructorsStyle.list}
             key={`${ingredient._id}-${index}`}
           >
-            <DragIcon type="primary" />
+            <DragIcon
+              type="primary"
+              onClick={() => handleRemoveClick(ingredient)}
+            />
             <ConstructorElement
               isLocked={false}
               text={ingredient.name}
@@ -76,7 +101,7 @@ function BurgerConstructor({ onClick }) {
           </li>
         ))}
       </ul>
-      {bun && renderBurgerElement(bun, "bottom")}
+      {bun && renderBurgerElement(bun, "bottom", 0)}
       <div className={`${burgerConstructorsStyle.price} pt-10 pr-4`}>
         <div className={burgerConstructorsStyle.count}>
           <p className="text text_type_digits-medium">{totalPrice}</p>

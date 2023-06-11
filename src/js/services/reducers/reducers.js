@@ -2,13 +2,13 @@ import {
   GET_INGREDIENTS_REQUEST,
   GET_INGREDIENTS_SUCCESS,
   GET_INGREDIENTS_FAILED,
-  REMOVE_INGREDIENT,
   SET_CURRENT_INGREDIENT,
   RESET_CURRENT_INGREDIENT,
   PLACE_ORDER_REQUEST,
   PLACE_ORDER_SUCCESS,
   PLACE_ORDER_FAILED,
   ADD_INGREDIENT_TO_CONSTRUCTOR,
+  REMOVE_INGREDIENT,
   RESET_ORDER,
   SET_INGREDIENT_FOR_DETAILS,
   REMOVE_CURRENT_INGREDIENT,
@@ -44,14 +44,40 @@ export const burgerReducer = (state = initialState, action) => {
         ingredientsError: action.payload,
       };
     case ADD_INGREDIENT_TO_CONSTRUCTOR:
-      const price = action.payload.reduce((acc, ingredient) => {
+      const newIngredients = action.payload.filter((ingredient) => {
+        return !state.selectedIngredients.some(
+          (selectedIngredient) => selectedIngredient._id === ingredient._id
+        );
+      });
+
+      let newSelectedIngredients = [];
+
+      if (newIngredients.length > 0) {
+        if (newIngredients[0].type === "bun") {
+          newSelectedIngredients = [
+            newIngredients[0],
+            ...state.selectedIngredients.filter(
+              (ingredient) => ingredient.type !== "bun"
+            ),
+          ];
+        } else {
+          newSelectedIngredients = [
+            ...state.selectedIngredients,
+            ...newIngredients,
+          ];
+        }
+      } else {
+        newSelectedIngredients = state.selectedIngredients;
+      }
+
+      const newPrice = newSelectedIngredients.reduce((acc, ingredient) => {
         return acc + ingredient.price;
       }, 0);
 
       return {
         ...state,
-        selectedIngredients: [...action.payload],
-        totalPrice: price,
+        selectedIngredients: newSelectedIngredients,
+        totalPrice: newPrice,
       };
 
     case REMOVE_INGREDIENT:
@@ -61,8 +87,12 @@ export const burgerReducer = (state = initialState, action) => {
         ingredients: state.ingredients.filter(
           (item, idx) => idx !== action.payload
         ),
+        selectedIngredients: state.selectedIngredients.filter(
+          (ingredient) => ingredient._id !== removedIngredient._id
+        ),
         totalPrice: state.totalPrice - removedIngredient.price,
       };
+
     case SET_CURRENT_INGREDIENT:
       return { ...state, currentIngredient: action.payload };
     case RESET_CURRENT_INGREDIENT:

@@ -5,9 +5,18 @@ import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
 import { useDispatch } from "react-redux";
 import { setCurrentIngredient } from "../../services/actions/actions";
+import { useDrag } from "react-dnd";
 
 const Ingredient = ({ ingredient }) => {
   const dispatch = useDispatch();
+
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "ingredient",
+    item: { ingredient },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
 
   const handleIngredientClick = () => {
     dispatch(setCurrentIngredient(ingredient));
@@ -25,7 +34,11 @@ const Ingredient = ({ ingredient }) => {
   }, [ingredient.price]);
 
   return (
-    <div onClick={handleIngredientClick}>
+    <div
+      onClick={handleIngredientClick}
+      ref={dragRef}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
       <img
         className={ingridientStyle.picture}
         src={ingredient.image}
