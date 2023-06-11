@@ -9,6 +9,7 @@ import {
   PLACE_ORDER_FAILED,
   ADD_INGREDIENT_TO_CONSTRUCTOR,
   REMOVE_INGREDIENT,
+  ADD_BUN_TO_CONSTRUCTOR,
   RESET_ORDER,
   SET_INGREDIENT_FOR_DETAILS,
   REMOVE_CURRENT_INGREDIENT,
@@ -16,6 +17,7 @@ import {
 
 const initialState = {
   ingredients: [],
+  bun: null,
   currentIngredient: null,
   order: null,
   orderNumber: null,
@@ -43,54 +45,15 @@ export const burgerReducer = (state = initialState, action) => {
         ingredientsLoading: false,
         ingredientsError: action.payload,
       };
-    case ADD_INGREDIENT_TO_CONSTRUCTOR:
-      const newIngredients = action.payload.filter((ingredient) => {
-        return !state.selectedIngredients.some(
-          (selectedIngredient) => selectedIngredient._id === ingredient._id
-        );
-      });
-
-      let newSelectedIngredients = [];
-
-      if (newIngredients.length > 0) {
-        if (newIngredients[0].type === "bun") {
-          newSelectedIngredients = [
-            newIngredients[0],
-            ...state.selectedIngredients.filter(
-              (ingredient) => ingredient.type !== "bun"
-            ),
-          ];
-        } else {
-          newSelectedIngredients = [
-            ...state.selectedIngredients,
-            ...newIngredients,
-          ];
-        }
-      } else {
-        newSelectedIngredients = state.selectedIngredients;
-      }
-
-      const newPrice = newSelectedIngredients.reduce((acc, ingredient) => {
-        return acc + ingredient.price;
-      }, 0);
-
+    case ADD_BUN_TO_CONSTRUCTOR:
       return {
         ...state,
-        selectedIngredients: newSelectedIngredients,
-        totalPrice: newPrice,
+        bun: action.payload,
       };
-
-    case REMOVE_INGREDIENT:
-      const removedIngredient = state.ingredients[action.payload];
+    case ADD_INGREDIENT_TO_CONSTRUCTOR:
       return {
         ...state,
-        ingredients: state.ingredients.filter(
-          (item, idx) => idx !== action.payload
-        ),
-        selectedIngredients: state.selectedIngredients.filter(
-          (ingredient) => ingredient._id !== removedIngredient._id
-        ),
-        totalPrice: state.totalPrice - removedIngredient.price,
+        selectedIngredients: [...state.selectedIngredients, action.payload],
       };
 
     case SET_CURRENT_INGREDIENT:

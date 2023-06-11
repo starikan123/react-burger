@@ -16,9 +16,7 @@ import {
 
 function BurgerConstructor({ onClick }) {
   const dispatch = useDispatch();
-  const selectedIngredients = useSelector(
-    (state) => state.burger.selectedIngredients
-  );
+  const state = useSelector((state) => state.burger);
 
   const [, dropRef] = useDrop({
     accept: "ingredient",
@@ -27,7 +25,7 @@ function BurgerConstructor({ onClick }) {
 
   const handleOrderClick = async () => {
     try {
-      const ingredientIds = selectedIngredients.map((i) => i._id);
+      const ingredientIds = state.selectedIngredients.map((i) => i._id);
       dispatch(placeOrder(ingredientIds));
       onClick();
     } catch (error) {
@@ -35,62 +33,43 @@ function BurgerConstructor({ onClick }) {
     }
   };
 
-  const handleRemoveClick = (ingredient) => {
-    dispatch(removeIngredient(ingredient));
+  const handleRemoveClick = (ingredientId) => {
+    dispatch(removeIngredient(ingredientId._id));
   };
 
-  const renderBurgerElement = (ingredient, type, index) => {
-    return (
-      <div
-        className="ml-8 pl-4 pr-4"
-        key={`${ingredient._id}-${type}-${index}`}
-      >
-        <div>
-          <DragIcon
-            type="primary"
-            onClick={() => handleRemoveClick(ingredient)}
-          />
-        </div>
-        <ConstructorElement
-          type={type}
-          isLocked={ingredient.type === "bun"}
-          text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
-          price={ingredient.price}
-          thumbnail={ingredient.image_mobile}
-        />
-      </div>
-    );
-  };
-
-  const bun = useMemo(() => {
-    const bunIngredient = selectedIngredients.find(
-      (ingredient) => ingredient.type === "bun"
-    );
-    return bunIngredient || null;
-  }, [selectedIngredients]);
-
-  const otherIngredients = useMemo(() => {
-    return selectedIngredients.filter(
-      (ingredient) => ingredient.type !== "bun"
-    );
-  }, [selectedIngredients]);
+  const renderBurgerElement = (ingredient, type, index) => (
+    <div className="ml-8 pl-4 pr-4" key={`${ingredient._id}-${type}-${index}`}>
+      <ConstructorElement
+        type={type}
+        isLocked={ingredient.type === "bun"}
+        text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
+        price={ingredient.price}
+        thumbnail={ingredient.image_mobile}
+      />
+    </div>
+  );
 
   const totalPrice = useMemo(() => {
-    return selectedIngredients.reduce((acc, cur) => acc + cur.price, 0);
-  }, [selectedIngredients]);
+    const bunPrice = state.bun ? state.bun.price : 0;
+    const ingredientsPrice = state.selectedIngredients.reduce(
+      (acc, cur) => acc + cur.price,
+      0
+    );
+    return bunPrice + ingredientsPrice;
+  }, [state.selectedIngredients, state.bun]);
 
   return (
     <section className={`${burgerConstructorsStyle.board} pt-25`} ref={dropRef}>
-      {bun && renderBurgerElement(bun, "top", 0)}
+      {state.bun && renderBurgerElement(state.bun, "top", 0)}
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
-        {otherIngredients.map((ingredient, index) => (
+        {state.selectedIngredients.map((ingredient, index) => (
           <li
             className={burgerConstructorsStyle.list}
             key={`${ingredient._id}-${index}`}
           >
             <DragIcon
               type="primary"
-              onClick={() => handleRemoveClick(ingredient)}
+              onClick={() => handleRemoveClick(ingredient._id)}
             />
             <ConstructorElement
               isLocked={false}
@@ -101,7 +80,7 @@ function BurgerConstructor({ onClick }) {
           </li>
         ))}
       </ul>
-      {bun && renderBurgerElement(bun, "bottom", 0)}
+      {state.bun && renderBurgerElement(state.bun, "bottom", 0)}
       <div className={`${burgerConstructorsStyle.price} pt-10 pr-4`}>
         <div className={burgerConstructorsStyle.count}>
           <p className="text text_type_digits-medium">{totalPrice}</p>
