@@ -154,3 +154,15 @@ function BurgerConstructor({ onClick }) {
 }
 
 export default BurgerConstructor;
+
+BurgerConstructor.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType).isRequired,
+};
+
+DraggableConstructorElement.propTypes = {
+  index: PropTypes.number.isRequired,
+  moveIngredient: PropTypes.func.isRequired,
+  ingredient: ingredientType.isRequired,
+  handleRemoveClick: PropTypes.func.isRequired,
+};
