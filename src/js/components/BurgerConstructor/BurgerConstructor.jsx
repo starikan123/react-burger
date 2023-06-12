@@ -34,7 +34,7 @@ function BurgerConstructor({ onClick }) {
   };
 
   const handleRemoveClick = (ingredientId) => {
-    dispatch(removeIngredient(ingredientId._id));
+    dispatch(removeIngredient(ingredientId));
   };
 
   const renderBurgerElement = (ingredient, type, index) => (
@@ -42,6 +42,11 @@ function BurgerConstructor({ onClick }) {
       <ConstructorElement
         type={type}
         isLocked={ingredient.type === "bun"}
+        handleClose={
+          ingredient.type !== "bun"
+            ? () => handleRemoveClick(ingredient._id)
+            : undefined
+        }
         text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
         price={ingredient.price}
         thumbnail={ingredient.image_mobile}
@@ -67,12 +72,14 @@ function BurgerConstructor({ onClick }) {
             className={burgerConstructorsStyle.list}
             key={`${ingredient._id}-${index}`}
           >
-            <DragIcon
-              type="primary"
-              onClick={() => handleRemoveClick(ingredient._id)}
-            />
+            <DragIcon type="primary" />
             <ConstructorElement
-              isLocked={false}
+              isLocked={ingredient.type === "bun"}
+              handleClose={
+                ingredient.type !== "bun"
+                  ? () => handleRemoveClick(ingredient._id)
+                  : undefined
+              }
               text={ingredient.name}
               price={ingredient.price}
               thumbnail={ingredient.image_mobile}

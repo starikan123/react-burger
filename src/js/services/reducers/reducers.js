@@ -55,6 +55,13 @@ export const burgerReducer = (state = initialState, action) => {
         ...state,
         selectedIngredients: [...state.selectedIngredients, action.payload],
       };
+    case REMOVE_INGREDIENT:
+      return {
+        ...state,
+        selectedIngredients: state.selectedIngredients.filter(
+          (ingredient) => ingredient._id !== action.payload
+        ),
+      };
 
     case SET_CURRENT_INGREDIENT:
       return { ...state, currentIngredient: action.payload };
