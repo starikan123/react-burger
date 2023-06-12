@@ -13,6 +13,7 @@ import {
   SET_INGREDIENT_FOR_DETAILS,
   REMOVE_CURRENT_INGREDIENT,
   ADD_BUN_TO_CONSTRUCTOR,
+  MOVE_INGREDIENT,
 } from "./actionTypes";
 
 export const getIngredients = () => (dispatch, getState, api) => {
@@ -36,6 +37,11 @@ export const getIngredients = () => (dispatch, getState, api) => {
 export const removeIngredient = (ingredientId) => ({
   type: REMOVE_INGREDIENT,
   payload: ingredientId,
+});
+
+export const moveIngredient = (dragIndex, hoverIndex) => ({
+  type: MOVE_INGREDIENT,
+  payload: { dragIndex, hoverIndex },
 });
 
 export const setCurrentIngredient = (ingredient) => ({

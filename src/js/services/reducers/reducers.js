@@ -13,6 +13,7 @@ import {
   RESET_ORDER,
   SET_INGREDIENT_FOR_DETAILS,
   REMOVE_CURRENT_INGREDIENT,
+  MOVE_INGREDIENT,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -62,6 +63,17 @@ export const burgerReducer = (state = initialState, action) => {
           (ingredient) => ingredient._id !== action.payload
         ),
       };
+
+    case MOVE_INGREDIENT: {
+      const { dragIndex, hoverIndex } = action.payload;
+      const newSelectedIngredients = [...state.selectedIngredients];
+      const draggedIngredient = newSelectedIngredients[dragIndex];
+
+      newSelectedIngredients.splice(dragIndex, 1);
+      newSelectedIngredients.splice(hoverIndex, 0, draggedIngredient);
+
+      return { ...state, selectedIngredients: newSelectedIngredients };
+    }
 
     case SET_CURRENT_INGREDIENT:
       return { ...state, currentIngredient: action.payload };

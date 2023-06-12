@@ -6,13 +6,73 @@ import {
   CurrencyIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useDrop } from "react-dnd";
+import { useDrop, useDrag } from "react-dnd";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 import {
   addIngredientToConstructor,
   placeOrder,
   removeIngredient,
+  moveIngredient,
 } from "../../services/actions/actions";
+
+function DraggableConstructorElement({
+  index,
+  moveIngredient,
+  ingredient,
+  handleRemoveClick,
+}) {
+  const ref = React.useRef(null);
+
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "constructorElement",
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, dropRef] = useDrop({
+    accept: "constructorElement",
+    hover: (item, monitor) => {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      moveIngredient(dragIndex, hoverIndex);
+
+      item.index = hoverIndex;
+    },
+  });
+
+  dragRef(dropRef(ref));
+
+  return (
+    <li
+      ref={ref}
+      className={burgerConstructorsStyle.list}
+      style={{ opacity: isDragging ? 0 : 1 }}
+    >
+      <DragIcon type="primary" />
+      <ConstructorElement
+        isLocked={ingredient.type === "bun"}
+        handleClose={
+          ingredient.type !== "bun"
+            ? () => handleRemoveClick(ingredient._id)
+            : undefined
+        }
+        text={ingredient.name}
+        price={ingredient.price}
+        thumbnail={ingredient.image_mobile}
+      />
+    </li>
+  );
+}
 
 function BurgerConstructor({ onClick }) {
   const dispatch = useDispatch();
@@ -68,23 +128,15 @@ function BurgerConstructor({ onClick }) {
       {state.bun && renderBurgerElement(state.bun, "top", 0)}
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
         {state.selectedIngredients.map((ingredient, index) => (
-          <li
-            className={burgerConstructorsStyle.list}
+          <DraggableConstructorElement
             key={`${ingredient._id}-${index}`}
-          >
-            <DragIcon type="primary" />
-            <ConstructorElement
-              isLocked={ingredient.type === "bun"}
-              handleClose={
-                ingredient.type !== "bun"
-                  ? () => handleRemoveClick(ingredient._id)
-                  : undefined
-              }
-              text={ingredient.name}
-              price={ingredient.price}
-              thumbnail={ingredient.image_mobile}
-            />
-          </li>
+            index={index}
+            moveIngredient={(dragIndex, hoverIndex) =>
+              dispatch(moveIngredient(dragIndex, hoverIndex))
+            }
+            ingredient={ingredient}
+            handleRemoveClick={handleRemoveClick}
+          />
         ))}
       </ul>
       {state.bun && renderBurgerElement(state.bun, "bottom", 0)}
