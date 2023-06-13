@@ -17,7 +17,7 @@ const store = createStore(
   rootReducer,
   composeEnhancers(applyMiddleware(thunk.withExtraArgument(api)))
 );
-
+//
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>

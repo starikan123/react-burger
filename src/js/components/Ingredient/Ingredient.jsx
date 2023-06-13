@@ -1,10 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientType from "../../utils/types.jsx";
 import ingridientStyle from "./Ingredient.module.css";
 import { useDispatch } from "react-redux";
-import { setCurrentIngredient } from "../../services/actions/actions";
+import { setCurrentIngredient } from "../../services/actions/ingredientsActions.js";
+
 import { useDrag } from "react-dnd";
 
 const Ingredient = ({ ingredient }) => {

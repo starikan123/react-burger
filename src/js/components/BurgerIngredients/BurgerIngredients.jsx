@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getIngredients,
-  addIngredientToConstructor,
-} from "../../services/actions/actions";
+import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
+import { getIngredients } from "../../services/actions/ingredientsActions.js";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import ingredientsStyle from "./BurgerIngredients.module.css";
 
@@ -44,7 +41,7 @@ const BurgerIngredients = () => {
     dispatch(getIngredients());
   }, [dispatch]);
 
-  const ingredients = useSelector((state) => state.burger.ingredients);
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
 
   const handleSelectIngredient = (ingredient) => {
     dispatch(addIngredientToConstructor(ingredient));

@@ -19,7 +19,7 @@ const Modal = (props) => {
         props.onClose();
       }
     },
-    [props.onClose, dispatch]
+    [dispatch, props.onClose]
   );
 
   React.useEffect(() => {

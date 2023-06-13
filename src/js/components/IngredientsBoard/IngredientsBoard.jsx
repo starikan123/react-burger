@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ingredientType from "../../utils/types.jsx";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addIngredientToConstructor } from "../../services/actions/actions";
+import { addIngredientToConstructor } from "../../services/actions/constructorActions";
 
 const IngredientsBoard = React.forwardRef(({ data, title, menu }, ref) => {
   const dispatch = useDispatch();

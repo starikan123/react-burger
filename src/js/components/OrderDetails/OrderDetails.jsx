@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import done from "../../images/done.png";
 
 const OrderDetails = () => {
-  const orderNumber = useSelector((state) => state.burger.orderNumber);
+  const orderNumber = useSelector((state) => state.order.orderNumber);
 
   return (
     <div>

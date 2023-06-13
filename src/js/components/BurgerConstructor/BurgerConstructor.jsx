@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import PropTypes from "prop-types";
+import ingredientType from "../../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ConstructorElement,
@@ -8,12 +10,12 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDrop, useDrag } from "react-dnd";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
+import { placeOrder } from "../../services/actions/orderActions";
 import {
   addIngredientToConstructor,
-  placeOrder,
   removeIngredient,
   moveIngredient,
-} from "../../services/actions/actions";
+} from "../../services/actions/constructorActions";
 
 function DraggableConstructorElement({
   index,
@@ -75,17 +77,23 @@ function DraggableConstructorElement({
 }
 
 function BurgerConstructor({ onClick }) {
+  console.log("Rendering BurgerConstructor");
   const dispatch = useDispatch();
   const state = useSelector((state) => state.burger);
 
   const [, dropRef] = useDrop({
     accept: "ingredient",
-    drop: (item) => dispatch(addIngredientToConstructor(item.ingredient)),
+    drop: (item) => {
+      console.log("Dropped item", item);
+      console.log("Dispatching: addIngredientToConstructor", item.ingredient);
+      dispatch(addIngredientToConstructor(item.ingredient));
+    },
   });
 
   const handleOrderClick = async () => {
     try {
       const ingredientIds = state.selectedIngredients.map((i) => i._id);
+      console.log("Dispatching: placeOrder", ingredientIds);
       dispatch(placeOrder(ingredientIds));
       onClick();
     } catch (error) {
@@ -94,6 +102,7 @@ function BurgerConstructor({ onClick }) {
   };
 
   const handleRemoveClick = (ingredientId) => {
+    console.log("Dispatching: removeIngredient", ingredientId);
     dispatch(removeIngredient(ingredientId));
   };
 
@@ -157,7 +166,6 @@ export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
   onClick: PropTypes.func.isRequired,
-  ingredients: PropTypes.arrayOf(ingredientType).isRequired,
 };
 
 DraggableConstructorElement.propTypes = {
