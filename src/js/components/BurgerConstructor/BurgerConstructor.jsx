@@ -4,77 +4,18 @@ import ingredientType from "../../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ConstructorElement,
-  DragIcon,
   CurrencyIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useDrop, useDrag } from "react-dnd";
-import burgerConstructorsStyle from "./BurgerConstructor.module.css";
+import { useDrop } from "react-dnd";
 import { placeOrder } from "../../services/actions/orderActions";
 import {
   addIngredientToConstructor,
   removeIngredient,
   moveIngredient,
 } from "../../services/actions/constructorActions";
-
-function DraggableConstructorElement({
-  index,
-  moveIngredient,
-  ingredient,
-  handleRemoveClick,
-}) {
-  const ref = React.useRef(null);
-
-  const [{ isDragging }, dragRef] = useDrag({
-    type: "constructorElement",
-    item: { index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, dropRef] = useDrop({
-    accept: "constructorElement",
-    hover: (item, monitor) => {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      moveIngredient(dragIndex, hoverIndex);
-
-      item.index = hoverIndex;
-    },
-  });
-
-  dragRef(dropRef(ref));
-
-  return (
-    <li
-      ref={ref}
-      className={burgerConstructorsStyle.list}
-      style={{ opacity: isDragging ? 0 : 1 }}
-    >
-      <DragIcon type="primary" />
-      <ConstructorElement
-        isLocked={ingredient.type === "bun"}
-        handleClose={
-          ingredient.type !== "bun"
-            ? () => handleRemoveClick(ingredient._id)
-            : undefined
-        }
-        text={ingredient.name}
-        price={ingredient.price}
-        thumbnail={ingredient.image_mobile}
-      />
-    </li>
-  );
-}
+import DraggableConstructorElement from "../DraggableConstructorElement/DraggableConstructorElement";
+import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 
 function BurgerConstructor({ onClick }) {
   console.log("Rendering BurgerConstructor");
@@ -162,15 +103,9 @@ function BurgerConstructor({ onClick }) {
   );
 }
 
-export default BurgerConstructor;
-
 BurgerConstructor.propTypes = {
   onClick: PropTypes.func.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType.isRequired).isRequired,
 };
 
-DraggableConstructorElement.propTypes = {
-  index: PropTypes.number.isRequired,
-  moveIngredient: PropTypes.func.isRequired,
-  ingredient: ingredientType.isRequired,
-  handleRemoveClick: PropTypes.func.isRequired,
-};
+export default BurgerConstructor;

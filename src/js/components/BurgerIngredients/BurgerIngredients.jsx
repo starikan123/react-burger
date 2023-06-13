@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
 import { getIngredients } from "../../services/actions/ingredientsActions.js";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
+import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import ingredientsStyle from "./BurgerIngredients.module.css";
 
 const BurgerIngredients = () => {
@@ -43,6 +43,21 @@ const BurgerIngredients = () => {
 
   const ingredients = useSelector((state) => state.ingredients.ingredients);
 
+  const filteredBunIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "bun"),
+    [ingredients]
+  );
+
+  const filteredSauceIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "sauce"),
+    [ingredients]
+  );
+
+  const filteredMainIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "main"),
+    [ingredients]
+  );
+
   const handleSelectIngredient = (ingredient) => {
     dispatch(addIngredientToConstructor(ingredient));
   };
@@ -76,7 +91,7 @@ const BurgerIngredients = () => {
             ref={bunRef}
             title="Булки"
             menu="bun"
-            data={ingredients.filter((ingredient) => ingredient.type === "bun")}
+            data={filteredBunIngredients}
             onClick={handleSelectIngredient}
           />
         )}
@@ -85,9 +100,7 @@ const BurgerIngredients = () => {
             ref={sauceRef}
             title="Соусы"
             menu="sauce"
-            data={ingredients.filter(
-              (ingredient) => ingredient.type === "sauce"
-            )}
+            data={filteredSauceIngredients}
             onClick={handleSelectIngredient}
           />
         )}
@@ -96,9 +109,7 @@ const BurgerIngredients = () => {
             ref={mainRef}
             title="Начинки"
             menu="main"
-            data={ingredients.filter(
-              (ingredient) => ingredient.type === "main"
-            )}
+            data={filteredMainIngredients}
             onClick={handleSelectIngredient}
           />
         )}
