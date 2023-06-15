@@ -7,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import headerStyle from "./App-header.module.css";
 
-const AppHeader = () => {
+function AppHeader() {
   const getLinkClassName = (props) =>
     `${headerStyle.headerLink} ${props.isActive ? headerStyle.active : ""} p-5`;
 
@@ -17,12 +17,7 @@ const AppHeader = () => {
         <nav>
           <ul className={headerStyle.headerLists}>
             <li>
-              <NavLink
-                to="/"
-                className={getLinkClassName}
-                activeClassName=""
-                isActive={true}
-              >
+              <NavLink to="/" className={getLinkClassName} activeClassName="">
                 <BurgerIcon type="primary" />
                 <span className="text text_type_main-default pl-2">
                   Конструктор
@@ -34,7 +29,6 @@ const AppHeader = () => {
                 to="orders"
                 className={getLinkClassName}
                 activeClassName=""
-                isActive={true}
               >
                 <ListIcon type="secondary" />
                 <span className="text text_type_main-default pl-2">
@@ -45,12 +39,7 @@ const AppHeader = () => {
           </ul>
         </nav>
         <Logo />
-        <NavLink
-          to="profile"
-          className={getLinkClassName}
-          activeClassName=""
-          isActive={true}
-        >
+        <NavLink to="profile" className={getLinkClassName} activeClassName="">
           <ProfileIcon type="secondary" />
           <span className="text text_type_main-default pl-2">
             Личный кабинет
@@ -59,6 +48,6 @@ const AppHeader = () => {
       </div>
     </header>
   );
-};
+}
 
 export default AppHeader;

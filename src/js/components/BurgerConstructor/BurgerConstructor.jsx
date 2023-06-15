@@ -1,71 +1,111 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
+import ingredientType from "../../utils/types";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ConstructorElement,
-  DragIcon,
   CurrencyIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useDrop } from "react-dnd";
+import { placeOrder } from "../../services/actions/orderActions";
+import {
+  addIngredientToConstructor,
+  removeIngredient,
+  moveIngredient,
+} from "../../services/actions/constructorActions";
+import DraggableConstructorElement from "../DraggableConstructorElement/DraggableConstructorElement";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
-import ingredientType from "../../utils/types.jsx";
 
-const BurgerConstructor = ({ ingredientslist, menu, onClick }) => {
-  const filteredIngredients = useMemo(
-    () =>
-      ingredientslist
-        .filter((item) => item.type !== menu)
-        .map((item) => (
-          <li className={burgerConstructorsStyle.list} key={item._id}>
-            <DragIcon type="primary" />
-            <ConstructorElement
-              isLocked={false}
-              text={item.name}
-              price={item.price}
-              thumbnail={item.image_mobile}
-            />
-          </li>
-        )),
-    [ingredientslist, menu]
-  );
+function BurgerConstructor({ onClick }) {
+  console.log("Rendering BurgerConstructor");
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.burger);
 
-  const renderBurgerElement = (element, type) => {
-    return (
-      <div className="ml-8 pl-4 pr-4">
-        <ConstructorElement
-          type={type}
-          isLocked={true}
-          text={`${element.name} (${type === "top" ? "верх" : "низ"})`}
-          price={element.price}
-          thumbnail={element.image_mobile}
-        />
-      </div>
-    );
+  const [, dropRef] = useDrop({
+    accept: "ingredient",
+    drop: (item) => {
+      console.log("Dropped item", item);
+      console.log("Dispatching: addIngredientToConstructor", item.ingredient);
+      dispatch(addIngredientToConstructor(item.ingredient));
+    },
+  });
+
+  const handleOrderClick = async () => {
+    try {
+      const ingredientIds = state.selectedIngredients.map((i) => i._id);
+      console.log("Dispatching: placeOrder", ingredientIds);
+      dispatch(placeOrder(ingredientIds));
+      onClick();
+    } catch (error) {
+      console.error("Could not create order:", error);
+    }
   };
 
+  const handleRemoveClick = (ingredientId) => {
+    console.log("Dispatching: removeIngredient", ingredientId);
+    dispatch(removeIngredient(ingredientId));
+  };
+
+  const renderBurgerElement = (ingredient, type, index) => (
+    <div className="ml-8 pl-4 pr-4" key={`${ingredient._id}-${type}-${index}`}>
+      <ConstructorElement
+        type={type}
+        isLocked={ingredient.type === "bun"}
+        handleClose={
+          ingredient.type !== "bun"
+            ? () => handleRemoveClick(ingredient._id)
+            : undefined
+        }
+        text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
+        price={ingredient.price}
+        thumbnail={ingredient.image_mobile}
+      />
+    </div>
+  );
+
+  const totalPrice = useMemo(() => {
+    const bunPrice = state.bun ? state.bun.price : 0;
+    const ingredientsPrice = state.selectedIngredients.reduce(
+      (acc, cur) => acc + cur.price,
+      0
+    );
+    return bunPrice + ingredientsPrice;
+  }, [state.selectedIngredients, state.bun]);
+
   return (
-    <section className={`${burgerConstructorsStyle.board} pt-25`}>
-      {ingredientslist[0] && renderBurgerElement(ingredientslist[0], "top")}
+    <section className={`${burgerConstructorsStyle.board} pt-25`} ref={dropRef}>
+      {state.bun && renderBurgerElement(state.bun, "top", 0)}
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
-        {filteredIngredients}
+        {state.selectedIngredients.map((ingredient, index) => (
+          <DraggableConstructorElement
+            key={`${ingredient._id}-${index}`}
+            index={index}
+            moveIngredient={(dragIndex, hoverIndex) =>
+              dispatch(moveIngredient(dragIndex, hoverIndex))
+            }
+            ingredient={ingredient}
+            handleRemoveClick={handleRemoveClick}
+          />
+        ))}
       </ul>
-      {ingredientslist[0] && renderBurgerElement(ingredientslist[0], "bottom")}
+      {state.bun && renderBurgerElement(state.bun, "bottom", 0)}
       <div className={`${burgerConstructorsStyle.price} pt-10 pr-4`}>
         <div className={burgerConstructorsStyle.count}>
-          <p className="text text_type_digits-medium">100500</p>
+          <p className="text text_type_digits-medium">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button onClick={onClick} htmlType="button" type="primary" size="large">
+        <Button onClick={handleOrderClick} type="primary" size="large">
           Оформить заказ
         </Button>
       </div>
     </section>
   );
-};
+}
 
 BurgerConstructor.propTypes = {
-  ingredientslist: PropTypes.arrayOf(ingredientType).isRequired,
-  menu: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  ingredients: PropTypes.arrayOf(ingredientType.isRequired).isRequired,
 };
 
 export default BurgerConstructor;

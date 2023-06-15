@@ -1,20 +1,65 @@
-import React from "react";
-import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
-
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
+import { getIngredients } from "../../services/actions/ingredientsActions.js";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
+import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import ingredientsStyle from "./BurgerIngredients.module.css";
-import PropTypes from "prop-types";
-import ingredientType from "../../utils/types.jsx";
 
-const BurgerIngredients = ({ ingredientslist, onClick }) => {
-  const [current, setCurrent] = React.useState("bun");
+const BurgerIngredients = () => {
+  const dispatch = useDispatch();
 
-  const filteredIngredients = React.useMemo(() => {
-    return ingredientslist.filter((item) => item.type === current);
-  }, [ingredientslist, current]);
+  const bunRef = useRef(null);
+  const sauceRef = useRef(null);
+  const mainRef = useRef(null);
+
+  const [activeTab, setActiveTab] = useState("bun");
+
+  const checkActiveTab = () => {
+    const bunPos = Math.abs(bunRef.current.getBoundingClientRect().top);
+    const saucePos = Math.abs(sauceRef.current.getBoundingClientRect().top);
+    const mainPos = Math.abs(mainRef.current.getBoundingClientRect().top);
+
+    if (bunPos < saucePos && bunPos < mainPos) {
+      setActiveTab("bun");
+    } else if (saucePos < bunPos && saucePos < mainPos) {
+      setActiveTab("sauce");
+    } else {
+      setActiveTab("main");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("scroll", checkActiveTab);
+
+    return () => {
+      document.removeEventListener("scroll", checkActiveTab);
+    };
+  }, []);
+
+  useEffect(() => {
+    dispatch(getIngredients());
+  }, [dispatch]);
+
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+
+  const filteredBunIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "bun"),
+    [ingredients]
+  );
+
+  const filteredSauceIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "sauce"),
+    [ingredients]
+  );
+
+  const filteredMainIngredients = useMemo(
+    () => ingredients.filter((ingredient) => ingredient.type === "main"),
+    [ingredients]
+  );
 
   const handleSelectIngredient = (ingredient) => {
-    onClick(ingredient);
+    dispatch(addIngredientToConstructor(ingredient));
   };
 
   return (
@@ -26,44 +71,51 @@ const BurgerIngredients = ({ ingredientslist, onClick }) => {
         Соберите бургер
       </h1>
       <div className={ingredientsStyle.tabs}>
-        <Tab value="bun" active={current === "bun"} onClick={setCurrent}>
+        <Tab value="bun" onClick={() => {}} active={activeTab === "bun"}>
           Булки
         </Tab>
-        <Tab value="sauce" active={current === "sauce"} onClick={setCurrent}>
+        <Tab value="sauce" onClick={() => {}} active={activeTab === "sauce"}>
           Соусы
         </Tab>
-        <Tab value="main" active={current === "main"} onClick={setCurrent}>
+        <Tab value="main" onClick={() => {}} active={activeTab === "main"}>
           Начинки
         </Tab>
       </div>
 
-      <div className={`${ingredientsStyle.scroll} mt-10`}>
-        <IngredientsBoard
-          title="Булки"
-          menu="bun"
-          data={filteredIngredients}
-          onClick={handleSelectIngredient}
-        />
-        <IngredientsBoard
-          title="Соусы"
-          menu="sauce"
-          data={filteredIngredients}
-          onClick={handleSelectIngredient}
-        />
-        <IngredientsBoard
-          title="Начинки"
-          menu="main"
-          data={filteredIngredients}
-          onClick={handleSelectIngredient}
-        />
+      <div
+        className={`${ingredientsStyle.scroll} mt-10`}
+        onScroll={checkActiveTab}
+      >
+        {ingredients && (
+          <IngredientsBoard
+            ref={bunRef}
+            title="Булки"
+            menu="bun"
+            data={filteredBunIngredients}
+            onClick={handleSelectIngredient}
+          />
+        )}
+        {ingredients && (
+          <IngredientsBoard
+            ref={sauceRef}
+            title="Соусы"
+            menu="sauce"
+            data={filteredSauceIngredients}
+            onClick={handleSelectIngredient}
+          />
+        )}
+        {ingredients && (
+          <IngredientsBoard
+            ref={mainRef}
+            title="Начинки"
+            menu="main"
+            data={filteredMainIngredients}
+            onClick={handleSelectIngredient}
+          />
+        )}
       </div>
     </section>
   );
-};
-
-BurgerIngredients.propTypes = {
-  ingredientslist: PropTypes.arrayOf(ingredientType).isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default BurgerIngredients;
