@@ -1,0 +1,27 @@
+.registerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #131316;
+}
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 480px;
+  border-radius: 15px;
+}
+
+.registerLink {
+  color: #8585ad;
+  text-decoration: none;
+  text-align: center;
+  margin: 0;
+}
+.registerLink:hover {
+  cursor: pointer;
+  color: white;
+}

@@ -1,3 +1,4 @@
+import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   Logo,
@@ -17,7 +18,11 @@ function AppHeader() {
         <nav>
           <ul className={headerStyle.headerLists}>
             <li>
-              <NavLink to="/" className={getLinkClassName} activeClassName="">
+              <NavLink
+                to="/"
+                className={getLinkClassName}
+                activeClassName={headerStyle.active}
+              >
                 <BurgerIcon type="primary" />
                 <span className="text text_type_main-default pl-2">
                   Конструктор
@@ -26,9 +31,9 @@ function AppHeader() {
             </li>
             <li>
               <NavLink
-                to="orders"
+                to="/orders"
                 className={getLinkClassName}
-                activeClassName=""
+                activeClassName={headerStyle.active}
               >
                 <ListIcon type="secondary" />
                 <span className="text text_type_main-default pl-2">
@@ -39,7 +44,11 @@ function AppHeader() {
           </ul>
         </nav>
         <Logo />
-        <NavLink to="profile" className={getLinkClassName} activeClassName="">
+        <NavLink
+          to="/login"
+          className={getLinkClassName}
+          activeClassName={headerStyle.active}
+        >
           <ProfileIcon type="secondary" />
           <span className="text text_type_main-default pl-2">
             Личный кабинет

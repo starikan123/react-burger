@@ -15,6 +15,9 @@ import Modal from "../Modal/Modal";
 import IngredientDetails from "../IngredientDetails/IngredientDetails";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { Routes, Route } from "react-router-dom";
+import LoginPage from "../../../pages/LoginPage";
+import RegisterPage from "../../../pages/RegisterPage";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -59,11 +62,24 @@ function App() {
       <div className={`${appStyle.container} pb-10`} id="react-modals">
         <AppHeader />
         <main className={appStyle.section}>
-          <BurgerIngredients onClick={ingredientDetailsModal.openModal} />
-          <BurgerConstructor
-            onClick={orderModal.openModal}
-            selectedIngredients={selectedIngredients}
-          />
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <BurgerIngredients
+                    onClick={ingredientDetailsModal.openModal}
+                  />
+                  <BurgerConstructor
+                    onClick={orderModal.openModal}
+                    selectedIngredients={selectedIngredients}
+                  />
+                </>
+              }
+            />
+          </Routes>
         </main>
 
         {orderModal.isOpen && order && (
