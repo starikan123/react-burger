@@ -14,14 +14,21 @@
   width: 480px;
   border-radius: 15px;
 }
-
-.registerLink {
+.registerForm button {
+  width: 253px;
+  margin: 0 auto;
+}
+.loginLinkText {
   color: #8585ad;
-  text-decoration: none;
-  text-align: center;
   margin: 0;
 }
-.registerLink:hover {
+
+.loginLink {
+  color: #4c4cff;
+  text-decoration: none;
+}
+
+.loginLink:hover {
   cursor: pointer;
-  color: white;
+  text-decoration: underline;
 }

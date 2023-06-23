@@ -9,7 +9,7 @@ import styles from "./RegisterPage.module.css";
 function RegisterPage() {
   return (
     <div className={styles.registerContainer}>
-      <h1>Регистрация</h1>
+      <h1 className="text text_type_main-medium pb-6">Регистрация</h1>
       <form className={styles.registerForm}>
         <Input type="text" placeholder="Имя" />
         <Input type="email" placeholder="E-mail" />
@@ -18,8 +18,11 @@ function RegisterPage() {
           Зарегистрироваться
         </Button>
       </form>
-      <p className={`${styles.registerLink} pt-20`}>
-        Уже зарегистрированы? <Link to="/login">Войти</Link>
+      <p className={`${styles.registerLink} pt-20 text text_type_main-default`}>
+        <span className={styles.loginLinkText}> Уже зарегистрированы? </span>{" "}
+        <Link to="/login" className={styles.loginLink}>
+          Войти
+        </Link>
       </p>
     </div>
   );
