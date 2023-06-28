@@ -57,7 +57,7 @@ function RegisterPage() {
       </form>
       {error && <p className="text text_type_main-default">{error}</p>}
       <p className={`${styles.registerLink} pt-20 text text_type_main-default`}>
-        <span className={styles.loginLinkText}> Уже зарегистрированы? </span>{" "}
+        <span className={styles.loginLinkText}>Уже зарегистрированы? </span>
         <Link to="/login" className={styles.loginLink}>
           Войти
         </Link>

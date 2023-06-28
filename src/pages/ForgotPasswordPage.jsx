@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Input,
@@ -10,8 +10,10 @@ import { forgotPasswordRequest } from "../js/services/actions/authActions";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { forgotPasswordStatus, error } = useSelector((state) => state.auth);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -20,8 +22,16 @@ function ForgotPasswordPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(forgotPasswordRequest(email));
-    navigate("/reset-password");
   };
+
+  useEffect(() => {
+    if (forgotPasswordStatus === "success") {
+      navigate("/reset-password");
+    } else if (forgotPasswordStatus === "failure") {
+      console.error(error);
+      // TODO: Display the error to the user in a friendly manner
+    }
+  }, [forgotPasswordStatus, error, navigate]);
 
   return (
     <div className={styles.forgotPasswordContainer}>

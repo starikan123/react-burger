@@ -2,6 +2,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  LOGOUT,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
@@ -17,6 +18,8 @@ const initialState = {
   loading: false,
   user: null,
   error: null,
+  accessToken: null,
+  refreshToken: null,
 };
 
 export function authReducer(state = initialState, action) {
@@ -29,6 +32,14 @@ export function authReducer(state = initialState, action) {
 
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+      };
+
     case FORGOT_PASSWORD_SUCCESS:
     case RESET_PASSWORD_SUCCESS:
       return { ...state, loading: false, user: action.payload };
@@ -39,7 +50,17 @@ export function authReducer(state = initialState, action) {
     case RESET_PASSWORD_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
+    case LOGOUT:
+      return {
+        ...state,
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+      };
+
     default:
       return state;
   }
 }
+
+export default authReducer;

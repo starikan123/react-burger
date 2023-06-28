@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Input,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { loginRequest } from "../js/services/actions/authActions";
+import { login } from "../js/services/actions/authActions";
 import styles from "./LoginPage.module.css";
+import { setCookie } from "../js/utils/cookieHelpers";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordShown, setPasswordShown] = useState(false);
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error, accessToken } = useSelector((state) => state.auth);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -29,8 +30,14 @@ function LoginPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(loginRequest({ email, password }));
+    dispatch(login(email, password));
   };
+
+  useEffect(() => {
+    if (!loading && !error && accessToken) {
+      setCookie("token", accessToken);
+    }
+  }, [loading, error, accessToken]);
 
   return (
     <div className={styles.loginContainer}>

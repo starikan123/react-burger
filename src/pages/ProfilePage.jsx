@@ -60,12 +60,13 @@ const ProfilePage = () => {
           onChange={handleInputChange}
           value={formData.email}
           name={"email"}
-          placeholder="Логин"
+          placeholder="E-mail"
         />
         <PasswordInput
           onChange={handleInputChange}
           value={formData.password}
           name={"password"}
+          placeholder="Пароль"
         />
       </form>
     </div>
