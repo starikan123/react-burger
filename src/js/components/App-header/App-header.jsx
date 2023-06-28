@@ -45,7 +45,7 @@ function AppHeader() {
         </nav>
         <Logo />
         <NavLink
-          to="/login"
+          to="/profile"
           className={getLinkClassName}
           activeClassName={headerStyle.active}
         >
