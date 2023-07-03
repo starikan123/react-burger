@@ -48,3 +48,5 @@ export const UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESS";
 export const UPDATE_USER_FAILURE = "UPDATE_USER_FAILURE";
 
 export const LOGOUT = "LOGOUT";
+
+export const CLEAR_ERROR = "CLEAR_ERROR";

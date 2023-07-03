@@ -21,6 +21,7 @@ import RegisterPage from "../../../pages/RegisterPage";
 import ForgotPasswordPage from "../../../pages/ForgotPasswordPage";
 import ResetPasswordPage from "../../../pages/ResetPasswordPage";
 import ProfilePage from "../../../pages/ProfilePage";
+import ProtectedRouteElement from "../ProtectedRoute/ProtectedRoute";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -49,6 +50,7 @@ function App() {
   const { order, orderNumber } = useSelector((state) => state.order);
   const { currentIngredient } = useSelector((state) => state.ingredients);
   const { selectedIngredients } = useSelector((state) => state.constructor);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
@@ -70,7 +72,15 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRouteElement>
+                  <ProfilePage />
+                </ProtectedRouteElement>
+              }
+            />
+
             <Route
               path="/"
               element={

@@ -10,6 +10,7 @@ import { forgotPasswordRequest } from "../js/services/actions/authActions";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,6 +22,13 @@ function ForgotPasswordPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Add some validation
+    if (!email) {
+      setErrorMessage("Please enter your email.");
+      return;
+    }
+
     dispatch(forgotPasswordRequest(email));
   };
 
@@ -28,8 +36,7 @@ function ForgotPasswordPage() {
     if (forgotPasswordStatus === "success") {
       navigate("/reset-password");
     } else if (forgotPasswordStatus === "failure") {
-      console.error(error);
-      // TODO: Display the error to the user in a friendly manner
+      setErrorMessage(error);
     }
   }, [forgotPasswordStatus, error, navigate]);
 
@@ -43,7 +50,12 @@ function ForgotPasswordPage() {
           onChange={handleEmailChange}
           value={email}
         />
-        <Button type="primary" size="medium">
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        <Button
+          type="primary"
+          size="medium"
+          disabled={forgotPasswordStatus === "loading"}
+        >
           Восстановить
         </Button>
       </form>

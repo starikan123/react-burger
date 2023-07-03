@@ -43,28 +43,48 @@ const ProfilePage = () => {
     setFormData({ ...user });
   };
 
-  const setActive = ({ isActive }) =>
-    `${styles.link} ${isActive ? styles.active : "text_color_inactive"}`;
+  const setActive = (match, location) => {
+    return match ? `${styles.link} ${styles.active}` : `${styles.link}`;
+  };
 
   return (
     <div className={styles.profile}>
       <div className={styles.column}>
         <ul className={styles.navigation}>
           <li>
-            <NavLink to="/profile" className={setActive}>
-              <span className="text text_type_main-medium">Профиль</span>
+            <NavLink
+              to="/profile"
+              className={styles.link}
+              activeClassName={styles.active}
+              isActive={setActive}
+            >
+              <span className={`text text_type_main-medium ${styles.navText}`}>
+                Профиль
+              </span>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/profile/orders" className={setActive}>
-              <span className="text text_type_main-medium">
+            <NavLink
+              to="/profile/orders"
+              className={styles.link}
+              activeClassName={styles.active}
+              isActive={setActive}
+            >
+              <span className={`text text_type_main-medium ${styles.navText}`}>
                 История заказов
               </span>
             </NavLink>
           </li>
           <li>
-            <NavLink to="/profile/logout" className={setActive}>
-              <span className="text text_type_main-medium">Выход</span>
+            <NavLink
+              to="/profile/logout"
+              className={styles.link}
+              activeClassName={styles.active}
+              isActive={setActive}
+            >
+              <span className={`text text_type_main-medium ${styles.navText}`}>
+                Выход
+              </span>
             </NavLink>
           </li>
         </ul>
@@ -96,7 +116,7 @@ const ProfilePage = () => {
           <Button type="secondary" size="medium" onClick={handleCancel}>
             Отмена
           </Button>
-          <Button type="primary" size="medium">
+          <Button type="primary" size="medium" htmlType="submit">
             Сохранить
           </Button>
         </div>

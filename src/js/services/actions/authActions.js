@@ -18,6 +18,7 @@ import {
   UPDATE_USER_REQUEST,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILURE,
+  CLEAR_ERROR,
 } from "./actionTypes";
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
 
@@ -32,6 +33,10 @@ export function loginSuccess(user, accessToken, refreshToken) {
 
 export function loginFailure(error) {
   return { type: LOGIN_FAILURE, payload: error };
+}
+
+export function clearError() {
+  return { type: CLEAR_ERROR };
 }
 
 export function registerRequest(user) {
@@ -72,21 +77,20 @@ export function forgotPasswordRequest(email) {
         "https://norma.nomoreparties.space/api/password-reset",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
         }
       );
 
       const data = await response.json();
+
       if (data.success) {
-        dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: data });
+        dispatch(forgotPasswordSuccess(data));
       } else {
-        dispatch({ type: FORGOT_PASSWORD_FAILURE, payload: data.message });
+        dispatch(forgotPasswordFailure(data.message));
       }
     } catch (error) {
-      dispatch({ type: FORGOT_PASSWORD_FAILURE, payload: error.message });
+      dispatch(forgotPasswordFailure(error.message));
     }
   };
 }
@@ -104,83 +108,69 @@ export function resetPasswordFailure(error) {
 }
 
 export const resetPassword = (password, token) => async (dispatch) => {
-  dispatch({ type: RESET_PASSWORD_REQUEST });
+  dispatch(resetPasswordRequest());
 
   try {
     const response = await fetch(
       "https://norma.nomoreparties.space/api/password-reset/reset",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password, token }),
       }
     );
 
     if (response.ok) {
       const data = await response.json();
-      dispatch({ type: RESET_PASSWORD_SUCCESS, payload: data });
+      dispatch(resetPasswordSuccess(data));
     } else {
-      throw new Error("Failed to reset password");
+      dispatch(resetPasswordFailure("Failed to reset password"));
     }
   } catch (error) {
-    dispatch({ type: RESET_PASSWORD_FAILURE, payload: error.message });
+    dispatch(resetPasswordFailure(error.message));
   }
 };
 
-export const login = (email, password) => async (dispatch) => {
-  dispatch(loginRequest());
+export const login = (email, password) => {
+  return async (dispatch) => {
+    dispatch({
+      type: LOGIN_REQUEST,
+    });
+    try {
+      const response = await fetch(
+        "https://norma.nomoreparties.space/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-  try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      if (!response.ok) {
+        throw new Error("Server error occurred. Please try again.");
       }
-    );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      dispatch(loginSuccess(data.user, data.accessToken, data.refreshToken));
-    } else {
-      throw new Error(data.message);
-    }
-  } catch (error) {
-    dispatch(loginFailure(error.message));
-  }
-};
-
-export const register = (email, password, name) => async (dispatch) => {
-  dispatch(registerRequest());
-
-  try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/auth/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, name }),
+      if (data.success) {
+        localStorage.setItem("accessToken", data.accessToken.split(" ")[1]);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: data,
+        });
+      } else {
+        throw new Error(data.message);
       }
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      dispatch(registerSuccess(data.user, data.accessToken, data.refreshToken));
-    } else {
-      throw new Error(data.message);
+    } catch (error) {
+      dispatch({
+        type: LOGIN_FAILURE,
+        payload: error.message,
+      });
     }
-  } catch (error) {
-    dispatch(registerFailure(error.message));
-  }
+  };
 };
 
 export const logoutUser = () => async (dispatch) => {
@@ -191,9 +181,7 @@ export const logoutUser = () => async (dispatch) => {
       "https://norma.nomoreparties.space/api/auth/logout",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: refreshToken }),
       }
     );
@@ -213,21 +201,19 @@ export const logoutUser = () => async (dispatch) => {
 
 export const getUser = () => async (dispatch, getState) => {
   dispatch({ type: GET_USER_REQUEST });
+
   try {
     const response = await fetch(
       "https://norma.nomoreparties.space/api/auth/user",
       {
-        headers: {
-          authorization: getState().auth.accessToken,
-        },
+        headers: { authorization: getState().auth.accessToken },
       }
     );
+
     const data = await response.json();
+
     if (data.success) {
-      dispatch({
-        type: GET_USER_SUCCESS,
-        payload: data.user,
-      });
+      dispatch({ type: GET_USER_SUCCESS, payload: data.user });
     } else {
       dispatch({ type: GET_USER_FAILURE, payload: data.message });
     }
@@ -238,6 +224,7 @@ export const getUser = () => async (dispatch, getState) => {
 
 export const updateUser = (userInfo) => async (dispatch, getState) => {
   dispatch({ type: UPDATE_USER_REQUEST });
+
   try {
     const response = await fetch(
       "https://norma.nomoreparties.space/api/auth/user",
@@ -250,12 +237,11 @@ export const updateUser = (userInfo) => async (dispatch, getState) => {
         body: JSON.stringify(userInfo),
       }
     );
+
     const data = await response.json();
+
     if (data.success) {
-      dispatch({
-        type: UPDATE_USER_SUCCESS,
-        payload: data.user,
-      });
+      dispatch({ type: UPDATE_USER_SUCCESS, payload: data.user });
     } else {
       dispatch({ type: UPDATE_USER_FAILURE, payload: data.message });
     }
@@ -263,3 +249,45 @@ export const updateUser = (userInfo) => async (dispatch, getState) => {
     dispatch({ type: UPDATE_USER_FAILURE, payload: error.toString() });
   }
 };
+
+export function register(email, password, name) {
+  return function (dispatch) {
+    dispatch({
+      type: REGISTER_REQUEST,
+    });
+    fetch("https://norma.nomoreparties.space/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        name: name,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return res.json().then((json) => {
+          throw new Error(json.message);
+        });
+      })
+      .then((res) => {
+        dispatch({
+          type: REGISTER_SUCCESS,
+          payload: res,
+        });
+        localStorage.setItem("refreshToken", res.refreshToken);
+        setCookie("accessToken", res.accessToken.split(" ")[1]);
+      })
+      .catch((error) => {
+        console.error("Server Error:", error.message);
+        dispatch({
+          type: REGISTER_FAILURE,
+          payload: error.message,
+        });
+      });
+  };
+}

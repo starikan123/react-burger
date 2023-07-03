@@ -20,6 +20,7 @@ const initialState = {
   error: null,
   accessToken: null,
   refreshToken: null,
+  isAuthenticated: false,
 };
 
 export function authReducer(state = initialState, action) {
@@ -38,6 +39,7 @@ export function authReducer(state = initialState, action) {
         user: action.payload.user,
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
+        isAuthenticated: true,
       };
 
     case FORGOT_PASSWORD_SUCCESS:
@@ -48,7 +50,12 @@ export function authReducer(state = initialState, action) {
     case REGISTER_FAILURE:
     case FORGOT_PASSWORD_FAILURE:
     case RESET_PASSWORD_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        isAuthenticated: false,
+      };
 
     case LOGOUT:
       return {
@@ -56,6 +63,7 @@ export function authReducer(state = initialState, action) {
         user: null,
         accessToken: null,
         refreshToken: null,
+        isAuthenticated: false,
       };
 
     default:
