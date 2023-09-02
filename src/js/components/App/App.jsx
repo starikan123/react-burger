@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { removeCurrentIngredient } from "../../services/actions/actions";
 import {
+  getIngredients,
   setIngredientForDetails,
-  removeCurrentIngredient,
-} from "../../services/actions/actions";
-import { getIngredients } from "../../services/actions/ingredientsActions";
+} from "../../services/actions/ingredientsActions";
 import { placeOrder, resetOrder } from "../../services/actions/orderActions";
 import AppHeader from "../App-header/App-header";
 import appStyle from "./App.module.css";
@@ -50,7 +51,6 @@ function App() {
   const { order, orderNumber } = useSelector((state) => state.order);
   const { currentIngredient } = useSelector((state) => state.ingredients);
   const { selectedIngredients } = useSelector((state) => state.constructor);
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
@@ -62,6 +62,9 @@ function App() {
     dispatch(getIngredients());
   }, [dispatch]);
 
+  const location = useLocation();
+  const background = location.state && location.state.background;
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className={`${appStyle.container} pb-10`} id="react-modals">
@@ -72,6 +75,17 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route
+              path="/ingredients/:id"
+              element={
+                background ? (
+                  <></>
+                ) : (
+                  <IngredientDetails ingredient={currentIngredient} />
+                )
+              }
+            />
+
             <Route
               path="/profile"
               element={
@@ -104,10 +118,15 @@ function App() {
           </Modal>
         )}
 
-        {ingredientDetailsModal.isOpen && currentIngredient && (
-          <Modal onClose={ingredientDetailsModal.closeModal}>
-            <IngredientDetails ingredient={currentIngredient} />
-          </Modal>
+        {background && (
+          <Route
+            path="/ingredients/:id"
+            children={
+              <Modal onClose={ingredientDetailsModal.closeModal}>
+                <IngredientDetails ingredient={currentIngredient} />
+              </Modal>
+            }
+          />
         )}
       </div>
     </DndProvider>

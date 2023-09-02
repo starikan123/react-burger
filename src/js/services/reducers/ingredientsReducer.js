@@ -4,13 +4,14 @@ import {
   GET_INGREDIENTS_FAILED,
   SET_CURRENT_INGREDIENT,
   RESET_CURRENT_INGREDIENT,
+  SET_INGREDIENT_FOR_DETAILS,
 } from "../actions/actionTypes";
 
 const initialState = {
   ingredients: [],
   ingredientsLoading: false,
   ingredientsError: null,
-  currentIngredient: null,
+  currentIngredient: {},
 };
 
 export const ingredientsReducer = (state = initialState, action) => {
@@ -32,7 +33,9 @@ export const ingredientsReducer = (state = initialState, action) => {
     case SET_CURRENT_INGREDIENT:
       return { ...state, currentIngredient: action.payload };
     case RESET_CURRENT_INGREDIENT:
-      return { ...state, currentIngredient: null };
+      return { ...state, currentIngredient: {} };
+    case SET_INGREDIENT_FOR_DETAILS:
+      return { ...state, currentIngredient: action.payload };
     default:
       return state;
   }

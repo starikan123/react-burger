@@ -1,12 +1,15 @@
 import React from "react";
 import ingredientStyle from "./IngredientDetails.module.css";
-import ingredientType from "../../utils/types.jsx";
 import { useSelector } from "react-redux";
 
 const IngredientDetails = () => {
   const currentIngredient = useSelector(
     (state) => state.burger.currentIngredient
   );
+
+  if (!currentIngredient) {
+    return <p className="no-ingredient">No ingredient selected.</p>;
+  }
 
   const { name, calories, proteins, fats, carbohydrates, image } =
     currentIngredient;
@@ -48,10 +51,6 @@ const IngredientDetails = () => {
       </ul>
     </>
   );
-};
-
-IngredientDetails.propTypes = {
-  ingredient: ingredientType.isRequired,
 };
 
 export default IngredientDetails;

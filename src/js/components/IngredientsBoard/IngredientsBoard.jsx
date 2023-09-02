@@ -3,18 +3,27 @@ import IngredientsBoardStyle from "./IngredientsBoard.module.css";
 import PropTypes from "prop-types";
 import ingredientType from "../../utils/types.jsx";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addIngredientToConstructor } from "../../services/actions/constructorActions";
+import { setIngredientForDetails } from "../../services/actions/ingredientsActions";
 
 const IngredientsBoard = React.forwardRef(({ data, title, menu }, ref) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const filteredData = React.useMemo(() => {
     return data.filter((item) => item.type === menu);
   }, [data, menu]);
 
   const handleIngredientClick = (ingredient) => {
-    dispatch(addIngredientToConstructor(ingredient));
+    dispatch(setIngredientForDetails(ingredient));
+    if (isAuthenticated) {
+      dispatch(addIngredientToConstructor(ingredient));
+    } else {
+      navigate(`/ingredients/${ingredient._id}`);
+    }
   };
 
   return (
