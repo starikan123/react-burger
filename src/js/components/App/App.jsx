@@ -51,6 +51,21 @@ function App() {
   const { order, orderNumber } = useSelector((state) => state.order);
   const { currentIngredient } = useSelector((state) => state.ingredients);
   const { selectedIngredients } = useSelector((state) => state.constructor);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const [ingredientModalOpen, setIngredientModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (
+      !isAuthenticated &&
+      currentIngredient &&
+      Object.keys(currentIngredient).length > 0
+    ) {
+      setIngredientModalOpen(true);
+    } else {
+      setIngredientModalOpen(false);
+    }
+  }, [currentIngredient, isAuthenticated]);
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
@@ -118,15 +133,10 @@ function App() {
           </Modal>
         )}
 
-        {background && (
-          <Route
-            path="/ingredients/:id"
-            children={
-              <Modal onClose={ingredientDetailsModal.closeModal}>
-                <IngredientDetails ingredient={currentIngredient} />
-              </Modal>
-            }
-          />
+        {ingredientModalOpen && (
+          <Modal onClose={() => setIngredientModalOpen(false)}>
+            <IngredientDetails />
+          </Modal>
         )}
       </div>
     </DndProvider>

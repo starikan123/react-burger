@@ -11,9 +11,16 @@ const BurgerIngredients = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const handleIngredientClick = (id) => {
-    navigate(`/ingredients/${id}`, { state: { background: location } });
+  const handleIngredientClick = (ingredient) => {
+    if (isAuthenticated) {
+      dispatch(addIngredientToConstructor(ingredient));
+    } else {
+      navigate(`/ingredients/${ingredient._id}`, {
+        state: { background: location },
+      });
+    }
   };
 
   const bunRef = useRef(null);
@@ -66,10 +73,6 @@ const BurgerIngredients = () => {
     [ingredients]
   );
 
-  const handleSelectIngredient = (ingredient) => {
-    dispatch(addIngredientToConstructor(ingredient));
-  };
-
   return (
     <section
       className={`${ingredientsStyle.board} pt-10`}
@@ -112,7 +115,6 @@ const BurgerIngredients = () => {
             title="Булки"
             menu="bun"
             data={filteredBunIngredients}
-            onClick={handleSelectIngredient}
             onIngredientClick={handleIngredientClick}
           />
         )}
@@ -122,7 +124,6 @@ const BurgerIngredients = () => {
             title="Соусы"
             menu="sauce"
             data={filteredSauceIngredients}
-            onClick={handleSelectIngredient}
             onIngredientClick={handleIngredientClick}
           />
         )}
@@ -132,7 +133,6 @@ const BurgerIngredients = () => {
             title="Начинки"
             menu="main"
             data={filteredMainIngredients}
-            onClick={handleSelectIngredient}
             onIngredientClick={handleIngredientClick}
           />
         )}
