@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateUser } from "../js/services/actions/authActions";
 import { NavLink } from "react-router-dom";
+import { logoutUser } from "../js/services/actions/authActions";
 
 const ProfilePage = () => {
   const [formData, setFormData] = useState({
@@ -41,6 +42,11 @@ const ProfilePage = () => {
   const handleCancel = (event) => {
     event.preventDefault();
     setFormData({ ...user });
+  };
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    dispatch(logoutUser());
   };
 
   const setActive = (match, location) => {
@@ -81,6 +87,7 @@ const ProfilePage = () => {
               className={styles.link}
               activeClassName={styles.active}
               isActive={setActive}
+              onClick={handleLogout}
             >
               <span className={`text text_type_main-medium ${styles.navText}`}>
                 Выход
