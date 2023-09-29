@@ -12,6 +12,7 @@ import {
   RESET_PASSWORD_REQUEST,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
+  LOGOUT_SUCCESS,
 } from "../actions/actionTypes";
 
 import { getCookie } from "../../utils/cookieHelpers";
@@ -66,7 +67,10 @@ export function authReducer(state = initialState, action) {
         accessToken: null,
         refreshToken: null,
         isAuthenticated: false,
+        currentIngredient: null,
       };
+    case LOGOUT_SUCCESS:
+      return initialState;
 
     default:
       return state;

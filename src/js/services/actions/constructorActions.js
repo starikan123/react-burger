@@ -3,6 +3,7 @@ import {
   REMOVE_INGREDIENT,
   ADD_BUN_TO_CONSTRUCTOR,
   MOVE_INGREDIENT,
+  CLEAR_BURGER_CONSTRUCTOR,
 } from "./actionTypes";
 
 export function addIngredientToConstructor(ingredient) {
@@ -36,5 +37,11 @@ export const moveIngredient = (dragIndex, hoverIndex) => {
   return {
     type: MOVE_INGREDIENT,
     payload: { dragIndex, hoverIndex },
+  };
+};
+
+export const clearBurgerConstructor = () => {
+  return {
+    type: CLEAR_BURGER_CONSTRUCTOR,
   };
 };

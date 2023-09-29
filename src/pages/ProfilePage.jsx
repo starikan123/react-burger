@@ -8,8 +8,9 @@ import {
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateUser } from "../js/services/actions/authActions";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../js/services/actions/authActions";
+import { clearBurgerConstructor } from "../js/services/actions/constructorActions";
 
 const ProfilePage = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const ProfilePage = () => {
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getUser());
@@ -47,6 +49,8 @@ const ProfilePage = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     dispatch(logoutUser());
+    dispatch(clearBurgerConstructor());
+    navigate("/");
   };
 
   const setActive = (match, location) => {

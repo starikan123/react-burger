@@ -6,6 +6,13 @@ const IngredientDetails = () => {
   const currentIngredient = useSelector(
     (state) => state.burger.currentIngredient
   );
+  const selectedIngredient = useSelector(
+    (state) => state.burger.currentIngredient
+  );
+
+  if (!selectedIngredient) {
+    return null;
+  }
 
   if (!currentIngredient) {
     return <p className="no-ingredient">No ingredient selected.</p>;

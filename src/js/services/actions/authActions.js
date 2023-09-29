@@ -19,6 +19,7 @@ import {
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILURE,
   CLEAR_ERROR,
+  LOGOUT_SUCCESS,
 } from "./actionTypes";
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
 
@@ -43,6 +44,11 @@ export function clearError() {
 export function registerRequest(user) {
   return { type: REGISTER_REQUEST, payload: user };
 }
+export const logoutSuccess = () => {
+  return {
+    type: LOGOUT_SUCCESS,
+  };
+};
 
 export function registerSuccess(user, accessToken, refreshToken) {
   setCookie("refreshToken", refreshToken, 7);
@@ -193,6 +199,7 @@ export const logoutUser = () => async (dispatch) => {
     if (data.success) {
       deleteCookie("refreshToken");
       dispatch(logout());
+      dispatch(logoutSuccess());
     } else {
       throw new Error(data.message);
     }
