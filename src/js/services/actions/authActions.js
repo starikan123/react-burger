@@ -27,6 +27,7 @@ export function loginRequest(user) {
 }
 
 export function loginSuccess(user, accessToken, refreshToken) {
+  setCookie("accessToken", accessToken, 1);
   setCookie("refreshToken", refreshToken, 7);
   return { type: LOGIN_SUCCESS, payload: { user, accessToken, refreshToken } };
 }
@@ -56,6 +57,7 @@ export function registerFailure(error) {
 }
 
 export function logout() {
+  deleteCookie("accessToken");
   deleteCookie("refreshToken");
   return { type: LOGOUT };
 }
@@ -155,8 +157,8 @@ export const login = (email, password) => {
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem("accessToken", data.accessToken.split(" ")[1]);
-        localStorage.setItem("refreshToken", data.refreshToken);
+        setCookie("accessToken", data.accessToken.split(" ")[1], 1);
+        setCookie("refreshToken", data.refreshToken, 7);
         dispatch({
           type: LOGIN_SUCCESS,
           payload: data,
@@ -279,8 +281,8 @@ export function register(email, password, name) {
           type: REGISTER_SUCCESS,
           payload: res,
         });
-        localStorage.setItem("refreshToken", res.refreshToken);
-        setCookie("accessToken", res.accessToken.split(" ")[1]);
+        setCookie("accessToken", res.accessToken.split(" ")[1], 1);
+        setCookie("refreshToken", res.refreshToken, 7);
       })
       .catch((error) => {
         console.error("Server Error:", error.message);

@@ -14,13 +14,15 @@ import {
   RESET_PASSWORD_FAILURE,
 } from "../actions/actionTypes";
 
+import { getCookie } from "../../utils/cookieHelpers";
+
 const initialState = {
   loading: false,
   user: null,
   error: null,
-  accessToken: null,
-  refreshToken: null,
-  isAuthenticated: false,
+  accessToken: getCookie("accessToken") || null,
+  refreshToken: getCookie("refreshToken") || null,
+  isAuthenticated: !!getCookie("refreshToken"),
 };
 
 export function authReducer(state = initialState, action) {

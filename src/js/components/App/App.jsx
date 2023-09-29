@@ -23,6 +23,8 @@ import ForgotPasswordPage from "../../../pages/ForgotPasswordPage";
 import ResetPasswordPage from "../../../pages/ResetPasswordPage";
 import ProfilePage from "../../../pages/ProfilePage";
 import ProtectedRouteElement from "../ProtectedRoute/ProtectedRoute";
+import { getCookie } from "../../utils/cookieHelpers";
+import { loginSuccess, getUser } from "../../services/actions/authActions";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -66,6 +68,16 @@ function App() {
       setIngredientModalOpen(false);
     }
   }, [currentIngredient, isAuthenticated]);
+
+  useEffect(() => {
+    const refreshToken = getCookie("refreshToken");
+    if (refreshToken) {
+      const accessToken = getCookie("accessToken");
+      dispatch(loginSuccess(null, accessToken, refreshToken));
+
+      dispatch(getUser());
+    }
+  }, [dispatch]);
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
