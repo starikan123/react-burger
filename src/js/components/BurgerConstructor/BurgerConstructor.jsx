@@ -18,23 +18,22 @@ import DraggableConstructorElement from "../DraggableConstructorElement/Draggabl
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 
 function BurgerConstructor({ onClick }) {
-  console.log("Rendering BurgerConstructor");
   const dispatch = useDispatch();
   const state = useSelector((state) => state.burger);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [, dropRef] = useDrop({
     accept: "ingredient",
     drop: (item) => {
-      console.log("Dropped item", item);
-      console.log("Dispatching: addIngredientToConstructor", item.ingredient);
-      dispatch(addIngredientToConstructor(item.ingredient));
+      if (isAuthenticated) {
+        dispatch(addIngredientToConstructor(item.ingredient));
+      }
     },
   });
 
   const handleOrderClick = async () => {
     try {
       const ingredientIds = state.selectedIngredients.map((i) => i._id);
-      console.log("Dispatching: placeOrder", ingredientIds);
       dispatch(placeOrder(ingredientIds));
       onClick();
     } catch (error) {
