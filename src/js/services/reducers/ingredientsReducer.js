@@ -31,11 +31,10 @@ export const ingredientsReducer = (state = initialState, action) => {
         ingredientsError: action.payload,
       };
     case SET_CURRENT_INGREDIENT:
-      return { ...state, currentIngredient: action.payload };
+    case SET_INGREDIENT_FOR_DETAILS:
+      return { ...state, currentIngredient: { ...action.payload } };
     case RESET_CURRENT_INGREDIENT:
       return { ...state, currentIngredient: {} };
-    case SET_INGREDIENT_FOR_DETAILS:
-      return { ...state, currentIngredient: action.payload };
     default:
       return state;
   }
