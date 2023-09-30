@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import ingredientType from "../../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ConstructorElement,
@@ -42,7 +41,6 @@ function BurgerConstructor({ onClick }) {
   };
 
   const handleRemoveClick = (ingredientId) => {
-    console.log("Dispatching: removeIngredient", ingredientId);
     dispatch(removeIngredient(ingredientId));
   };
 
@@ -94,7 +92,12 @@ function BurgerConstructor({ onClick }) {
           <p className="text text_type_digits-medium">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button onClick={handleOrderClick} type="primary" size="large">
+        <Button
+          htmlType="button"
+          onClick={handleOrderClick}
+          type="primary"
+          size="large"
+        >
           Оформить заказ
         </Button>
       </div>
@@ -104,7 +107,6 @@ function BurgerConstructor({ onClick }) {
 
 BurgerConstructor.propTypes = {
   onClick: PropTypes.func.isRequired,
-  ingredients: PropTypes.arrayOf(ingredientType.isRequired).isRequired,
 };
 
 export default BurgerConstructor;

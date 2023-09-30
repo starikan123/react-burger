@@ -9,8 +9,8 @@ import {
 import headerStyle from "./App-header.module.css";
 
 function AppHeader() {
-  const getLinkClassName = (props) =>
-    `${headerStyle.headerLink} ${props.isActive ? headerStyle.active : ""} p-5`;
+  const getLinkClassName = (isActive) =>
+    `${headerStyle.headerLink} ${isActive ? headerStyle.active : ""} p-5`;
 
   return (
     <header className={`${headerStyle.header} pt-4 pb-4`}>
@@ -20,8 +20,7 @@ function AppHeader() {
             <li>
               <NavLink
                 to="/"
-                className={getLinkClassName}
-                activeClassName={headerStyle.active}
+                className={({ isActive }) => getLinkClassName(isActive)}
               >
                 <BurgerIcon type="primary" />
                 <span className="text text_type_main-default pl-2">
@@ -32,8 +31,7 @@ function AppHeader() {
             <li>
               <NavLink
                 to="/orders"
-                className={getLinkClassName}
-                activeClassName={headerStyle.active}
+                className={({ isActive }) => getLinkClassName(isActive)}
               >
                 <ListIcon type="secondary" />
                 <span className="text text_type_main-default pl-2">
@@ -46,8 +44,7 @@ function AppHeader() {
         <Logo />
         <NavLink
           to="/profile"
-          className={getLinkClassName}
-          activeClassName={headerStyle.active}
+          className={({ isActive }) => getLinkClassName(isActive)}
         >
           <ProfileIcon type="secondary" />
           <span className="text text_type_main-default pl-2">
