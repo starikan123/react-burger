@@ -7,7 +7,7 @@ import rootReducer from "./js/services/reducers/rootReducer";
 import Api from "./js/utils/api";
 import { HashRouter } from "react-router-dom";
 import App from "./js/components/App/App.jsx";
-import { baseUrl } from "./js/utils/constants";
+import { baseUrl } from "./js/utils/apiUtils";
 
 const api = new Api(baseUrl);
 
