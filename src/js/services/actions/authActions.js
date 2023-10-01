@@ -22,6 +22,7 @@ import {
   LOGOUT_SUCCESS,
 } from "./actionTypes";
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
+import { baseUrl } from "../../utils/constants";
 
 export function loginRequest(user) {
   return { type: LOGIN_REQUEST, payload: user };
@@ -81,14 +82,11 @@ export function forgotPasswordRequest(email) {
     dispatch({ type: FORGOT_PASSWORD_REQUEST });
 
     try {
-      const response = await fetch(
-        "https://norma.nomoreparties.space/api/password-reset",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch(`${baseUrl}/password-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       const data = await response.json();
 
@@ -119,14 +117,11 @@ export const resetPassword = (password, token) => async (dispatch) => {
   dispatch(resetPasswordRequest());
 
   try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/password-reset/reset",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, token }),
-      }
-    );
+    const response = await fetch(`${baseUrl}/password-reset/reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password, token }),
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -145,16 +140,13 @@ export const login = (email, password) => {
       type: LOGIN_REQUEST,
     });
     try {
-      const response = await fetch(
-        "https://norma.nomoreparties.space/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json;charset=utf-8",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${baseUrl}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       if (!response.ok) {
         throw new Error("Server error occurred. Please try again.");
@@ -185,14 +177,11 @@ export const logoutUser = () => async (dispatch) => {
   const refreshToken = getCookie("refreshToken");
 
   try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/auth/logout",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: refreshToken }),
-      }
-    );
+    const response = await fetch(`${baseUrl}/auth/logout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: refreshToken }),
+    });
 
     const data = await response.json();
 
@@ -212,12 +201,9 @@ export const getUser = () => async (dispatch, getState) => {
   dispatch({ type: GET_USER_REQUEST });
 
   try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/auth/user",
-      {
-        headers: { authorization: getState().auth.accessToken },
-      }
-    );
+    const response = await fetch(`${baseUrl}/auth/user`, {
+      headers: { authorization: getState().auth.accessToken },
+    });
 
     const data = await response.json();
 
@@ -235,17 +221,14 @@ export const updateUser = (userInfo) => async (dispatch, getState) => {
   dispatch({ type: UPDATE_USER_REQUEST });
 
   try {
-    const response = await fetch(
-      "https://norma.nomoreparties.space/api/auth/user",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: getState().auth.accessToken,
-        },
-        body: JSON.stringify(userInfo),
-      }
-    );
+    const response = await fetch(`${baseUrl}/auth/user`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: getState().auth.accessToken,
+      },
+      body: JSON.stringify(userInfo),
+    });
 
     const data = await response.json();
 
@@ -264,7 +247,7 @@ export function register(email, password, name) {
     dispatch({
       type: REGISTER_REQUEST,
     });
-    fetch("https://norma.nomoreparties.space/api/auth/register", {
+    fetch(`${baseUrl}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",

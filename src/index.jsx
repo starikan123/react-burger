@@ -7,8 +7,8 @@ import rootReducer from "./js/services/reducers/rootReducer";
 import Api from "./js/utils/api";
 import { HashRouter } from "react-router-dom";
 import App from "./js/components/App/App.jsx";
+import { baseUrl } from "./js/utils/constants";
 
-const baseUrl = "https://norma.nomoreparties.space/api";
 const api = new Api(baseUrl);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
