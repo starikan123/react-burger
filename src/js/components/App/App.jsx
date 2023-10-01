@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import IngredientDetailPage from "../IngredientDetailPage/IngredientDetailPage";
 import { removeCurrentIngredient } from "../../services/actions/actions";
 import {
   getIngredients,
@@ -102,16 +103,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route
-              path="/ingredients/:id"
-              element={
-                background ? (
-                  <></>
-                ) : (
-                  <IngredientDetails ingredient={currentIngredient} />
-                )
-              }
-            />
+            <Route path="/ingredients/:id" element={<IngredientDetailPage />} />
 
             <Route
               path="/profile"
@@ -145,7 +137,7 @@ function App() {
           </Modal>
         )}
 
-        {ingredientModalOpen && (
+        {background && ingredientModalOpen && (
           <Modal onClose={() => setIngredientModalOpen(false)}>
             <IngredientDetails />
           </Modal>

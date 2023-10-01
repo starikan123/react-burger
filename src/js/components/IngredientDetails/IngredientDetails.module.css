@@ -1,5 +1,12 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .title {
-  align-self: flex-start;
+  align-self: center;
 }
 
 .img {

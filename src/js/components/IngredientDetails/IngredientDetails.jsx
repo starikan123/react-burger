@@ -3,9 +3,6 @@ import ingredientStyle from "./IngredientDetails.module.css";
 import { useSelector } from "react-redux";
 
 const IngredientDetails = () => {
-  const currentIngredient = useSelector(
-    (state) => state.burger.currentIngredient
-  );
   const selectedIngredient = useSelector(
     (state) => state.burger.currentIngredient
   );
@@ -14,15 +11,11 @@ const IngredientDetails = () => {
     return null;
   }
 
-  if (!currentIngredient) {
-    return <p className="no-ingredient">No ingredient selected.</p>;
-  }
-
   const { name, calories, proteins, fats, carbohydrates, image } =
-    currentIngredient;
+    selectedIngredient;
 
   return (
-    <>
+    <div className={ingredientStyle.box}>
       <h3
         className={`${ingredientStyle.title} text text_type_main-large pt-10`}
       >
@@ -56,7 +49,7 @@ const IngredientDetails = () => {
           <p className="text text_type_main-default">{carbohydrates}</p>
         </li>
       </ul>
-    </>
+    </div>
   );
 };
 
