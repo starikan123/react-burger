@@ -51,7 +51,6 @@ const BurgerIngredients = () => {
 
   useEffect(() => {
     document.addEventListener("scroll", checkActiveTab);
-    dispatch(getIngredients());
 
     return () => {
       document.removeEventListener("scroll", checkActiveTab);

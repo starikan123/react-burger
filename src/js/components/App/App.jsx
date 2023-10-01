@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import IngredientDetailPage from "../IngredientDetailPage/IngredientDetailPage";
 import { removeCurrentIngredient } from "../../services/actions/actions";
 import {
@@ -31,25 +31,29 @@ function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
 
-  const openModal = (...args) => {
-    if (openAction) {
-      dispatch(openAction(...args));
-    }
-    setOpen(true);
-  };
+  const openModal = useCallback(
+    (...args) => {
+      if (openAction) {
+        dispatch(openAction(...args));
+      }
+      setOpen(true);
+    },
+    [dispatch, openAction]
+  );
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     if (closeAction) {
       dispatch(closeAction());
     }
     setOpen(false);
-  };
+  }, [dispatch, closeAction]);
 
   return { isOpen, openModal, closeModal };
 }
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { order, orderNumber } = useSelector((state) => state.order);
   const { currentIngredient } = useSelector((state) => state.ingredients);
@@ -79,6 +83,12 @@ function App() {
       dispatch(getUser());
     }
   }, [dispatch]);
+
+  const handleCloseIngredientModal = useCallback(() => {
+    dispatch(removeCurrentIngredient());
+    setIngredientModalOpen(false);
+    navigate("/");
+  }, [dispatch, navigate]);
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
@@ -138,7 +148,7 @@ function App() {
         )}
 
         {background && ingredientModalOpen && (
-          <Modal onClose={() => setIngredientModalOpen(false)}>
+          <Modal onClose={handleCloseIngredientModal}>
             <IngredientDetails />
           </Modal>
         )}
