@@ -87,7 +87,7 @@ function App() {
   }, [dispatch]);
 
   const handleCloseIngredientModal = () => {
-    navigate(-1); // Navigate back in history when modal is closed
+    navigate(-1);
   };
 
   const orderModal = useModal(placeOrder, resetOrder);

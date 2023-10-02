@@ -11,10 +11,19 @@ import { forgotPasswordRequest } from "../js/services/actions/authActions";
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { forgotPasswordStatus, error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (forgotPasswordStatus === "success") {
+      navigate("/reset-password");
+    } else if (error) {
+      setErrorMessage(error);
+    }
+  }, [forgotPasswordStatus, error, navigate]);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -23,7 +32,6 @@ function ForgotPasswordPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Add some validation
     if (!email) {
       setErrorMessage("Please enter your email.");
       return;
@@ -31,14 +39,6 @@ function ForgotPasswordPage() {
 
     dispatch(forgotPasswordRequest(email));
   };
-
-  useEffect(() => {
-    if (forgotPasswordStatus === "success") {
-      navigate("/reset-password");
-    } else if (forgotPasswordStatus === "failure") {
-      setErrorMessage(error);
-    }
-  }, [forgotPasswordStatus, error, navigate]);
 
   return (
     <div className={styles.forgotPasswordContainer}>
@@ -52,6 +52,7 @@ function ForgotPasswordPage() {
         />
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
         <Button
+          htmlType="submit"
           type="primary"
           size="medium"
           disabled={forgotPasswordStatus === "loading"}

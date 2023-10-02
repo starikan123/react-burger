@@ -24,6 +24,8 @@ const initialState = {
   accessToken: getCookie("accessToken") || null,
   refreshToken: getCookie("refreshToken") || null,
   isAuthenticated: !!getCookie("refreshToken"),
+  forgotPasswordStatus: null,
+  resetPasswordStatus: null,
 };
 
 export function authReducer(state = initialState, action) {
@@ -46,12 +48,23 @@ export function authReducer(state = initialState, action) {
       };
 
     case FORGOT_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        forgotPasswordStatus: action.payload.status,
+      };
     case RESET_PASSWORD_SUCCESS:
       return { ...state, loading: false, user: action.payload };
 
     case LOGIN_FAILURE:
     case REGISTER_FAILURE:
     case FORGOT_PASSWORD_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        forgotPasswordStatus: action.payload.status,
+        error: action.payload.error,
+      };
     case RESET_PASSWORD_FAILURE:
       return {
         ...state,

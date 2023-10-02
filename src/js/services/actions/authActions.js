@@ -69,12 +69,15 @@ export function logout() {
   return { type: LOGOUT };
 }
 
-export function forgotPasswordSuccess(user) {
-  return { type: FORGOT_PASSWORD_SUCCESS, payload: user };
+export function forgotPasswordSuccess() {
+  return { type: FORGOT_PASSWORD_SUCCESS, payload: { status: "success" } };
 }
 
 export function forgotPasswordFailure(error) {
-  return { type: FORGOT_PASSWORD_FAILURE, payload: error };
+  return {
+    type: FORGOT_PASSWORD_FAILURE,
+    payload: { status: "failure", error },
+  };
 }
 
 export const forgotPasswordRequest = (email) => async (dispatch) => {

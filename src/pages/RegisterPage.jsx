@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Input,
@@ -74,9 +74,9 @@ function RegisterPage() {
       {error && <p className="text text_type_main-default">{error}</p>}
       <p className={`${styles.registerLink} pt-20 text text_type_main-default`}>
         <span className={styles.loginLinkText}>Уже зарегистрированы? </span>
-        <button className={styles.loginLink} onClick={handleLoginRedirect}>
+        <a className={styles.loginLink} onClick={handleLoginRedirect}>
           Войти
-        </button>
+        </a>
       </p>
     </div>
   );
