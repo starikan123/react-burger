@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
-import { getIngredients } from "../../services/actions/ingredientsActions.js";
+import { setIngredientForDetails } from "../../services/actions/ingredientsActions.js";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
 import ingredientsStyle from "./BurgerIngredients.module.css";
@@ -17,6 +17,7 @@ const BurgerIngredients = () => {
     if (isAuthenticated) {
       dispatch(addIngredientToConstructor(ingredient));
     } else {
+      dispatch(setIngredientForDetails(ingredient));
       navigate(`/ingredients/${ingredient._id}`, {
         state: { background: location },
       });

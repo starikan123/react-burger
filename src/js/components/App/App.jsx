@@ -54,6 +54,8 @@ function useModal(openAction, closeAction) {
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const background = location.state && location.state.background;
 
   const { order, orderNumber } = useSelector((state) => state.order);
   const { currentIngredient } = useSelector((state) => state.ingredients);
@@ -84,11 +86,9 @@ function App() {
     }
   }, [dispatch]);
 
-  const handleCloseIngredientModal = useCallback(() => {
-    dispatch(removeCurrentIngredient());
-    setIngredientModalOpen(false);
-    navigate("/");
-  }, [dispatch, navigate]);
+  const handleCloseIngredientModal = () => {
+    navigate(-1); // Navigate back in history when modal is closed
+  };
 
   const orderModal = useModal(placeOrder, resetOrder);
   const ingredientDetailsModal = useModal(
@@ -100,15 +100,12 @@ function App() {
     dispatch(getIngredients());
   }, [dispatch]);
 
-  const location = useLocation();
-  const background = location.state && location.state.background;
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className={`${appStyle.container} pb-10`} id="react-modals">
         <AppHeader />
         <main className={appStyle.section}>
-          <Routes>
+          <Routes location={background || location}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -147,10 +144,17 @@ function App() {
           </Modal>
         )}
 
-        {background && ingredientModalOpen && (
-          <Modal onClose={handleCloseIngredientModal}>
-            <IngredientDetails />
-          </Modal>
+        {background && (
+          <Routes>
+            <Route
+              path="/ingredients/:ingredientId"
+              element={
+                <Modal onClose={handleCloseIngredientModal}>
+                  <IngredientDetails />
+                </Modal>
+              }
+            ></Route>
+          </Routes>
         )}
       </div>
     </DndProvider>
