@@ -6,7 +6,10 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ForgotPasswordPage.module.css";
-import { forgotPasswordRequest } from "../js/services/actions/authActions";
+import {
+  forgotPasswordRequest,
+  forgotPasswordInitiated,
+} from "../js/services/actions/authActions";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -38,6 +41,7 @@ function ForgotPasswordPage() {
     }
 
     dispatch(forgotPasswordRequest(email));
+    dispatch(forgotPasswordInitiated());
   };
 
   return (

@@ -6,7 +6,10 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ResetPasswordPage.module.css";
-import { resetPassword } from "../js/services/actions/authActions";
+import {
+  resetPassword,
+  resetForgotPasswordInitiated,
+} from "../js/services/actions/authActions";
 
 function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -15,13 +18,21 @@ function ResetPasswordPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { resetPasswordSuccess } = useSelector((state) => state.auth);
+  const { resetPasswordSuccess, forgotPasswordInitiated } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
+    if (!forgotPasswordInitiated) {
+      navigate("/forgot-password");
+      return;
+    }
+
     if (resetPasswordSuccess) {
+      dispatch(resetForgotPasswordInitiated());
       navigate("/login");
     }
-  }, [resetPasswordSuccess, navigate]);
+  }, [resetPasswordSuccess, forgotPasswordInitiated, navigate, dispatch]);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);

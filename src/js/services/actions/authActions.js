@@ -20,6 +20,8 @@ import {
   UPDATE_USER_FAILURE,
   CLEAR_ERROR,
   LOGOUT_SUCCESS,
+  FORGOT_PASSWORD_INITIATED,
+  RESET_FORGOT_PASSWORD_INITIATED,
 } from "./actionTypes";
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
 import { request } from "../../utils/apiUtils";
@@ -214,6 +216,18 @@ export const updateUser = (userInfo) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({ type: UPDATE_USER_FAILURE, payload: error.toString() });
   }
+};
+
+export const forgotPasswordInitiated = () => {
+  return {
+    type: FORGOT_PASSWORD_INITIATED,
+  };
+};
+
+export const resetForgotPasswordInitiated = () => {
+  return {
+    type: RESET_FORGOT_PASSWORD_INITIATED,
+  };
 };
 
 export function register(email, password, name) {

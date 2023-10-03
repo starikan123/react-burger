@@ -13,6 +13,7 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
   LOGOUT_SUCCESS,
+  RESET_FORGOT_PASSWORD_INITIATED,
 } from "../actions/actionTypes";
 
 import { getCookie } from "../../utils/cookieHelpers";
@@ -26,6 +27,7 @@ const initialState = {
   isAuthenticated: !!getCookie("refreshToken"),
   forgotPasswordStatus: null,
   resetPasswordStatus: null,
+  forgotPasswordInitiated: false,
 };
 
 export function authReducer(state = initialState, action) {
@@ -52,13 +54,20 @@ export function authReducer(state = initialState, action) {
         ...state,
         loading: false,
         forgotPasswordStatus: action.payload.status,
+        forgotPasswordInitiated: true,
       };
     case RESET_PASSWORD_SUCCESS:
       return {
         ...state,
         loading: false,
         resetPasswordSuccess: true,
+        forgotPasswordInitiated: false,
         error: null,
+      };
+    case RESET_FORGOT_PASSWORD_INITIATED:
+      return {
+        ...state,
+        forgotPasswordInitiated: false,
       };
 
     case LOGIN_FAILURE:
