@@ -54,7 +54,12 @@ export function authReducer(state = initialState, action) {
         forgotPasswordStatus: action.payload.status,
       };
     case RESET_PASSWORD_SUCCESS:
-      return { ...state, loading: false, user: action.payload };
+      return {
+        ...state,
+        loading: false,
+        resetPasswordSuccess: true,
+        error: null,
+      };
 
     case LOGIN_FAILURE:
     case REGISTER_FAILURE:

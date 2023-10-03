@@ -98,13 +98,15 @@ export function resetPasswordRequest() {
   return { type: RESET_PASSWORD_REQUEST };
 }
 
-export function resetPasswordSuccess(message) {
-  return { type: RESET_PASSWORD_SUCCESS, payload: message };
-}
+export const resetPasswordSuccess = (data) => ({
+  type: RESET_PASSWORD_SUCCESS,
+  payload: data,
+});
 
-export function resetPasswordFailure(error) {
-  return { type: RESET_PASSWORD_FAILURE, payload: error };
-}
+export const resetPasswordFailure = (error) => ({
+  type: RESET_PASSWORD_FAILURE,
+  payload: error,
+});
 
 export const resetPassword = (password, token) => async (dispatch) => {
   dispatch(resetPasswordRequest());
@@ -115,6 +117,7 @@ export const resetPassword = (password, token) => async (dispatch) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password, token }),
     });
+
     dispatch(resetPasswordSuccess(data));
   } catch (error) {
     dispatch(resetPasswordFailure(error));

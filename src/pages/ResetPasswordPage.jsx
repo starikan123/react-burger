@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Input,
   Button,
@@ -13,6 +13,15 @@ function ResetPasswordPage() {
   const [token, setToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { resetPasswordSuccess } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (resetPasswordSuccess) {
+      navigate("/login");
+    }
+  }, [resetPasswordSuccess, navigate]);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -45,7 +54,7 @@ function ResetPasswordPage() {
           onChange={handleTokenChange}
           value={token}
         />
-        <Button type="primary" size="medium">
+        <Button type="primary" size="medium" htmlType="submit">
           Сохранить
         </Button>
       </form>
