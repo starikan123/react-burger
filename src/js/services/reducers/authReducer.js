@@ -14,6 +14,9 @@ import {
   RESET_PASSWORD_FAILURE,
   LOGOUT_SUCCESS,
   RESET_FORGOT_PASSWORD_INITIATED,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
 } from "../actions/actionTypes";
 
 import { getCookie } from "../../utils/cookieHelpers";
@@ -37,6 +40,25 @@ export function authReducer(state = initialState, action) {
     case FORGOT_PASSWORD_REQUEST:
     case RESET_PASSWORD_REQUEST:
       return { ...state, loading: true };
+
+    case GET_USER_REQUEST:
+      return { ...state, loading: true };
+
+    case GET_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload,
+        isAuthenticated: true,
+      };
+
+    case GET_USER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        isAuthenticated: false,
+      };
 
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:

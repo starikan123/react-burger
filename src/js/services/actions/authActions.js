@@ -26,6 +26,20 @@ import {
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
 import { request } from "../../utils/apiUtils";
 
+export const getUserRequest = () => ({
+  type: GET_USER_REQUEST,
+});
+
+export const getUserSuccess = (user) => ({
+  type: GET_USER_SUCCESS,
+  payload: user,
+});
+
+export const getUserFailure = (error) => ({
+  type: GET_USER_FAILURE,
+  payload: error,
+});
+
 export function loginRequest(user) {
   return { type: LOGIN_REQUEST, payload: user };
 }
@@ -155,6 +169,14 @@ export const login = (email, password) => async (dispatch) => {
 export const logoutUser = () => async (dispatch) => {
   const refreshToken = getCookie("refreshToken");
 
+  if (!refreshToken) {
+    console.warn("No refresh token found. Logging out locally.");
+    deleteCookie("refreshToken");
+    deleteCookie("accessToken");
+    dispatch(logout());
+    return;
+  }
+
   try {
     const data = await request("/auth/logout", {
       method: "POST",
@@ -164,8 +186,8 @@ export const logoutUser = () => async (dispatch) => {
 
     if (data && data.success) {
       deleteCookie("refreshToken");
+      deleteCookie("accessToken");
       dispatch(logout());
-      dispatch(logoutSuccess());
     } else {
       throw new Error(data.message);
     }
@@ -174,24 +196,25 @@ export const logoutUser = () => async (dispatch) => {
       "Failed to logout",
       error.message || "Server error occurred. Please try again."
     );
+    deleteCookie("refreshToken");
+    deleteCookie("accessToken");
+    dispatch(logout());
   }
 };
 
 export const getUser = () => async (dispatch, getState) => {
-  dispatch({ type: GET_USER_REQUEST });
-
+  dispatch(getUserRequest());
   try {
     const data = await request("/auth/user", {
       headers: { authorization: getState().auth.accessToken },
     });
-
     if (data && data.success) {
-      dispatch({ type: GET_USER_SUCCESS, payload: data.user });
+      dispatch(getUserSuccess(data.user));
     } else {
       throw new Error(data.message);
     }
   } catch (error) {
-    dispatch({ type: GET_USER_FAILURE, payload: error.toString() });
+    dispatch(getUserFailure(error.toString()));
   }
 };
 

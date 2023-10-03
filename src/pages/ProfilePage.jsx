@@ -24,8 +24,23 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (user) {
+      setFormData({ ...user });
+    }
+  }, [user]);
+
+  useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user)
+      setFormData({
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      });
+  }, [user]);
 
   useEffect(() => {
     setFormData({ ...user });
@@ -108,23 +123,28 @@ const ProfilePage = () => {
           type="text"
           placeholder="Имя"
           onChange={handleInputChange}
-          value={formData.name}
+          value={formData.name || ""}
           name="name"
         />
         <EmailInput
           onChange={handleInputChange}
-          value={formData.email}
+          value={formData.email || ""}
           name="email"
           placeholder="E-mail"
         />
         <PasswordInput
           onChange={handleInputChange}
-          value={formData.password}
+          value={formData.password || ""}
           name="password"
           placeholder="Пароль"
         />
         <div className={styles.buttonContainer}>
-          <Button type="secondary" size="medium" onClick={handleCancel}>
+          <Button
+            type="secondary"
+            size="medium"
+            htmlType="reset"
+            onClick={handleCancel}
+          >
             Отмена
           </Button>
           <Button type="primary" size="medium" htmlType="submit">

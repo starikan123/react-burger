@@ -81,10 +81,14 @@ function App() {
     if (refreshToken) {
       const accessToken = getCookie("accessToken");
       dispatch(loginSuccess(null, accessToken, refreshToken));
-
-      dispatch(getUser());
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getUser());
+    }
+  }, [dispatch, isAuthenticated]);
 
   const handleCloseIngredientModal = () => {
     navigate(-1);
