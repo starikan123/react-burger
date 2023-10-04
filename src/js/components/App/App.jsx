@@ -151,13 +151,13 @@ function App() {
         {background && (
           <Routes>
             <Route
-              path="/ingredients/:ingredientId"
+              path="/ingredients/:id"
               element={
                 <Modal onClose={handleCloseIngredientModal}>
                   <IngredientDetails />
                 </Modal>
               }
-            ></Route>
+            />
           </Routes>
         )}
       </div>
