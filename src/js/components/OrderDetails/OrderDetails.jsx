@@ -1,12 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import done from "../../images/done.png";
+import OrderDetailsStyles from "./OrderDetails.module.css";
 
 const OrderDetails = () => {
   const orderNumber = useSelector((state) => state.order.orderNumber);
 
   return (
-    <div>
+    <div className={OrderDetailsStyles.box}>
       <h3 className="text text_type_digits-large pt-30 pb-8">{orderNumber}</h3>
       <p className="text text_type_main-medium pb-15">идентификатор заказа</p>
       <img src={done} alt="картинка успешного заказа" />

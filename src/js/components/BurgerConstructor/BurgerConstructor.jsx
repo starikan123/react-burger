@@ -26,9 +26,7 @@ function BurgerConstructor({ onClick }) {
   const [, dropRef] = useDrop({
     accept: "ingredient",
     drop: (item) => {
-      if (isAuthenticated) {
-        dispatch(addIngredientToConstructor(item.ingredient));
-      }
+      dispatch(addIngredientToConstructor(item.ingredient));
     },
   });
 
