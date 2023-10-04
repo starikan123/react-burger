@@ -25,26 +25,17 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (user) {
-      setFormData({ ...user });
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        password: user.password || "",
+      });
     }
   }, [user]);
 
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (user)
-      setFormData({
-        name: user.name,
-        email: user.email,
-        password: user.password,
-      });
-  }, [user]);
-
-  useEffect(() => {
-    setFormData({ ...user });
-  }, [user]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -58,7 +49,13 @@ const ProfilePage = () => {
 
   const handleCancel = (event) => {
     event.preventDefault();
-    setFormData({ ...user });
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        password: user.password || "",
+      });
+    }
   };
 
   const handleLogout = (event) => {
@@ -68,33 +65,19 @@ const ProfilePage = () => {
     navigate("/");
   };
 
-  const setActive = (match, location) => {
-    return match ? `${styles.link} ${styles.active}` : `${styles.link}`;
-  };
-
   return (
     <div className={styles.profile}>
       <div className={styles.column}>
         <ul className={styles.navigation}>
           <li>
-            <NavLink
-              to="/profile"
-              className={styles.link}
-              activeClassName={styles.active}
-              isActive={setActive}
-            >
+            <NavLink to="/profile" className={styles.link}>
               <span className={`text text_type_main-medium ${styles.navText}`}>
                 Профиль
               </span>
             </NavLink>
           </li>
           <li>
-            <NavLink
-              to="/profile/orders"
-              className={styles.link}
-              activeClassName={styles.active}
-              isActive={setActive}
-            >
+            <NavLink to="/profile/orders" className={styles.link}>
               <span className={`text text_type_main-medium ${styles.navText}`}>
                 История заказов
               </span>
@@ -104,8 +87,6 @@ const ProfilePage = () => {
             <NavLink
               to="/profile/logout"
               className={styles.link}
-              activeClassName={styles.active}
-              isActive={setActive}
               onClick={handleLogout}
             >
               <span className={`text text_type_main-medium ${styles.navText}`}>

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -18,6 +19,7 @@ import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 
 function BurgerConstructor({ onClick }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const state = useSelector((state) => state.burger);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -33,8 +35,13 @@ function BurgerConstructor({ onClick }) {
   const handleOrderClick = async () => {
     try {
       const ingredientIds = state.selectedIngredients.map((i) => i._id);
-      dispatch(placeOrder(ingredientIds));
-      onClick();
+
+      if (isAuthenticated) {
+        dispatch(placeOrder(ingredientIds));
+        onClick();
+      } else {
+        navigate(`/login`);
+      }
     } catch (error) {
       console.error("Could not create order:", error);
     }
