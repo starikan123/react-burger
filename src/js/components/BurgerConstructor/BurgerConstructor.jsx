@@ -34,6 +34,10 @@ function BurgerConstructor({ onClick }) {
     try {
       const ingredientIds = state.selectedIngredients.map((i) => i._id);
 
+      if (!ingredientIds || ingredientIds.length === 0) {
+        return;
+      }
+
       if (isAuthenticated) {
         dispatch(placeOrder(ingredientIds));
         onClick();
