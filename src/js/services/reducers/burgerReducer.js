@@ -34,9 +34,10 @@ export const burgerReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedIngredients: state.selectedIngredients.filter(
-          (ingredient) => ingredient._id !== action.payload
+          (ingredient) => ingredient.uniqueId !== action.payload.uniqueId
         ),
       };
+
     case MOVE_INGREDIENT: {
       const { dragIndex, hoverIndex } = action.payload;
       const newSelectedIngredients = [...state.selectedIngredients];

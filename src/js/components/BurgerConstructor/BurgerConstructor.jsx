@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,11 @@ function BurgerConstructor({ onClick }) {
   const [, dropRef] = useDrop({
     accept: "ingredient",
     drop: (item) => {
-      dispatch(addIngredientToConstructor(item.ingredient));
+      const ingredientWithUniqueId = {
+        ...item.ingredient,
+        uniqueId: uuidv4(),
+      };
+      dispatch(addIngredientToConstructor(ingredientWithUniqueId));
     },
   });
 
@@ -49,18 +54,21 @@ function BurgerConstructor({ onClick }) {
     }
   };
 
-  const handleRemoveClick = (ingredientId) => {
-    dispatch(removeIngredient(ingredientId));
+  const handleRemoveClick = (uniqueId) => {
+    dispatch(removeIngredient(uniqueId));
   };
 
   const renderBurgerElement = (ingredient, type, index) => (
-    <div className="ml-8 pl-4 pr-4" key={`${ingredient._id}-${type}-${index}`}>
+    <div
+      className="ml-8 pl-4 pr-4"
+      key={`${ingredient.uniqueId}-${type}-${index}`}
+    >
       <ConstructorElement
         type={type}
         isLocked={ingredient.type === "bun"}
         handleClose={
           ingredient.type !== "bun"
-            ? () => handleRemoveClick(ingredient._id)
+            ? () => handleRemoveClick(ingredient.uniqueId)
             : undefined
         }
         text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
@@ -85,7 +93,7 @@ function BurgerConstructor({ onClick }) {
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
         {state.selectedIngredients.map((ingredient, index) => (
           <DraggableConstructorElement
-            key={`${ingredient._id}-${index}`}
+            key={ingredient.uniqueId}
             index={index}
             moveIngredient={(dragIndex, hoverIndex) =>
               dispatch(moveIngredient(dragIndex, hoverIndex))

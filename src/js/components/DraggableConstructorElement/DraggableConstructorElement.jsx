@@ -57,7 +57,7 @@ function DraggableConstructorElementComponent({
         isLocked={ingredient.type === "bun"}
         handleClose={
           ingredient.type !== "bun"
-            ? () => handleRemoveClick(ingredient._id)
+            ? () => handleRemoveClick(ingredient.uniqueId)
             : undefined
         }
         text={ingredient.name}

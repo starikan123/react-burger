@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
@@ -14,9 +15,13 @@ const BurgerIngredients = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleIngredientClick = (ingredient) => {
-    if (isAuthenticated) {
-      dispatch(addIngredientToConstructor(ingredient));
-    } else {
+    const ingredientWithUniqueId = {
+      ...ingredient,
+      uniqueId: uuidv4(),
+    };
+
+    dispatch(addIngredientToConstructor(ingredientWithUniqueId));
+    if (!isAuthenticated) {
       dispatch(setIngredientForDetails(ingredient));
       navigate(`/ingredients/${ingredient._id}`, {
         state: { background: location },

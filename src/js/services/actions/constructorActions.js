@@ -22,12 +22,10 @@ export function addIngredientToConstructor(ingredient) {
   };
 }
 
-export const removeIngredient = (ingredientId) => {
-  return {
-    type: REMOVE_INGREDIENT,
-    payload: ingredientId,
-  };
-};
+export const removeIngredient = (uniqueId) => ({
+  type: REMOVE_INGREDIENT,
+  payload: { uniqueId },
+});
 
 export const moveIngredient = (dragIndex, hoverIndex) => {
   return {
