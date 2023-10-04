@@ -20,8 +20,9 @@ const BurgerIngredients = () => {
       uniqueId: uuidv4(),
     };
 
-    dispatch(addIngredientToConstructor(ingredientWithUniqueId));
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
+      dispatch(addIngredientToConstructor(ingredientWithUniqueId));
+    } else {
       dispatch(setIngredientForDetails(ingredient));
       navigate(`/ingredients/${ingredient._id}`, {
         state: { background: location },
