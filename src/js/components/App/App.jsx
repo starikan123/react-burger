@@ -25,7 +25,11 @@ import ResetPasswordPage from "../../../pages/ResetPasswordPage";
 import ProfilePage from "../../../pages/ProfilePage";
 import ProtectedRouteElement from "../ProtectedRoute/ProtectedRoute";
 import { getCookie } from "../../utils/cookieHelpers";
-import { loginSuccess, getUser } from "../../services/actions/authActions";
+import {
+  loginSuccess,
+  getUser,
+  updateToken,
+} from "../../services/actions/authActions";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -78,9 +82,16 @@ function App() {
 
   useEffect(() => {
     const refreshToken = getCookie("refreshToken");
+
     if (refreshToken) {
       const accessToken = getCookie("accessToken");
-      dispatch(loginSuccess(null, accessToken, refreshToken));
+
+      if (!accessToken) {
+        dispatch(updateToken());
+      } else {
+        dispatch(loginSuccess(null, accessToken, refreshToken));
+        dispatch(getUser());
+      }
     }
   }, [dispatch]);
 

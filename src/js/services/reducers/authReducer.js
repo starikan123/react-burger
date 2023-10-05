@@ -17,6 +17,7 @@ import {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
+  UPDATE_TOKEN_SUCCESS,
 } from "../actions/actionTypes";
 
 import { getCookie } from "../../utils/cookieHelpers";
@@ -120,6 +121,13 @@ export function authReducer(state = initialState, action) {
       };
     case LOGOUT_SUCCESS:
       return initialState;
+    case UPDATE_TOKEN_SUCCESS:
+      return {
+        ...state,
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
+        loading: false,
+      };
 
     default:
       return state;

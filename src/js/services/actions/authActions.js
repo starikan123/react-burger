@@ -22,9 +22,13 @@ import {
   LOGOUT_SUCCESS,
   FORGOT_PASSWORD_INITIATED,
   RESET_FORGOT_PASSWORD_INITIATED,
+  UPDATE_TOKEN_REQUEST,
+  UPDATE_TOKEN_SUCCESS,
+  UPDATE_TOKEN_FAILURE,
 } from "./actionTypes";
 import { setCookie, deleteCookie, getCookie } from "../../utils/cookieHelpers";
 import { request } from "../../utils/apiUtils";
+import jwtDecode from "jwt-decode";
 
 export const getUserRequest = () => ({
   type: GET_USER_REQUEST,
@@ -202,18 +206,62 @@ export const logoutUser = () => async (dispatch) => {
   }
 };
 
-export const getUser = () => async (dispatch, getState) => {
-  dispatch(getUserRequest());
+export const isTokenExpired = (token) => {
   try {
-    const data = await request("/auth/user", {
-      headers: { authorization: getState().auth.accessToken },
+    const decoded = jwtDecode(token);
+    return decoded.exp < Date.now() / 1000;
+  } catch (e) {
+    console.error("Failed to decode token:", e);
+    return true;
+  }
+};
+export const updateToken = () => async (dispatch) => {
+  dispatch({ type: UPDATE_TOKEN_REQUEST });
+
+  try {
+    const response = await request("/auth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: getCookie("refreshToken") }),
     });
-    if (data && data.success) {
-      dispatch(getUserSuccess(data.user));
+
+    if (response && response.success) {
+      const { accessToken, refreshToken } = response;
+      setCookie("accessToken", accessToken, { expires: 1 });
+      setCookie("refreshToken", refreshToken, { expires: 7 });
+      dispatch({ type: UPDATE_TOKEN_SUCCESS, payload: { accessToken } });
     } else {
-      throw new Error(data.message);
+      dispatch(logout());
+      throw new Error("Token refresh failed");
     }
   } catch (error) {
+    console.error(error);
+    dispatch({ type: UPDATE_TOKEN_FAILURE, payload: error.toString() });
+    dispatch(logout());
+  }
+};
+
+export const getUser = () => async (dispatch, getState) => {
+  dispatch(getUserRequest());
+
+  try {
+    let token = getState().auth.accessToken;
+    if (isTokenExpired(token)) {
+      await dispatch(updateToken());
+      token = getState().auth.accessToken;
+    }
+
+    const response = await request("/auth/user", {
+      headers: { authorization: token },
+    });
+
+    if (response && response.success) {
+      dispatch(getUserSuccess(response.user));
+    } else {
+      throw new Error(response.message || "Unauthorized");
+    }
+  } catch (error) {
+    console.error(error);
     dispatch(getUserFailure(error.toString()));
   }
 };
