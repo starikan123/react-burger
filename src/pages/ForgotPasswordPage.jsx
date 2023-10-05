@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -10,37 +10,33 @@ import {
   forgotPasswordRequest,
   forgotPasswordInitiated,
 } from "../js/services/actions/authActions";
+import { useForm } from "../js/hooks/useForm";
 
 function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { forgotPasswordStatus, error } = useSelector((state) => state.auth);
 
+  const { values, handleChange, setValues } = useForm({ email: "" });
+
   useEffect(() => {
     if (forgotPasswordStatus === "success") {
       navigate("/reset-password");
     } else if (error) {
-      setErrorMessage(error);
+      setValues({ ...values, errorMessage: error });
     }
-  }, [forgotPasswordStatus, error, navigate]);
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
+  }, [forgotPasswordStatus, error, navigate, setValues, values]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!email) {
-      setErrorMessage("Please enter your email.");
+    if (!values.email) {
+      setValues({ ...values, errorMessage: "Please enter your email." });
       return;
     }
 
-    dispatch(forgotPasswordRequest(email));
+    dispatch(forgotPasswordRequest(values.email));
     dispatch(forgotPasswordInitiated());
   };
 
@@ -51,10 +47,13 @@ function ForgotPasswordPage() {
         <Input
           type="email"
           placeholder="Укажите e-mail"
-          onChange={handleEmailChange}
-          value={email}
+          onChange={handleChange}
+          value={values.email}
+          name="email"
         />
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {values.errorMessage && (
+          <p className={styles.error}>{values.errorMessage}</p>
+        )}{" "}
         <Button
           htmlType="submit"
           type="primary"

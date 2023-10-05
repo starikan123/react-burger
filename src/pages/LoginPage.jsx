@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,22 +8,19 @@ import {
 import { login, clearError } from "../js/services/actions/authActions";
 import styles from "./LoginPage.module.css";
 import { setCookie } from "../js/utils/cookieHelpers";
+import { useForm } from "../js/hooks/useForm";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordShown, setPasswordShown] = useState(false);
   const dispatch = useDispatch();
   const { loading, error, accessToken } = useSelector((state) => state.auth);
-  const navigate = useNavigate(); // Access the navigate function
+  const navigate = useNavigate();
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
+  const { values, handleChange } = useForm({
+    email: "",
+    password: "",
+  });
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  const [passwordShown, setPasswordShown] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
@@ -31,13 +28,13 @@ function LoginPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(login(email, password));
+    dispatch(login(values.email, values.password));
   };
 
   useEffect(() => {
     if (!loading && !error && accessToken) {
       setCookie("token", accessToken);
-      navigate("/", { replace: true }); // Redirect to the home page using navigate
+      navigate("/", { replace: true });
     }
   }, [loading, error, accessToken, navigate]);
 
@@ -54,14 +51,16 @@ function LoginPage() {
         <Input
           type="email"
           placeholder="E-mail"
-          onChange={handleEmailChange}
-          value={email}
+          onChange={handleChange}
+          value={values.email}
+          name="email"
         />
         <Input
           type={passwordShown ? "text" : "password"}
           placeholder="Пароль"
-          onChange={handlePasswordChange}
-          value={password}
+          onChange={handleChange}
+          value={values.password}
+          name="password"
           icon={passwordShown ? "HideIcon" : "ShowIcon"}
           onIconClick={togglePasswordVisibility}
         />

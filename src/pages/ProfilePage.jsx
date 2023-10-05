@@ -5,15 +5,16 @@ import {
   PasswordInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateUser } from "../js/services/actions/authActions";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../js/services/actions/authActions";
 import { clearBurgerConstructor } from "../js/services/actions/constructorActions";
+import { useForm } from "../js/hooks/useForm";
 
 const ProfilePage = () => {
-  const [formData, setFormData] = useState({
+  const { values, handleChange, setValues } = useForm({
     name: "",
     email: "",
     password: "",
@@ -25,37 +26,30 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (user) {
-      setFormData({
+      setValues({
         name: user.name || "",
         email: user.email || "",
         password: user.password || "",
       });
     }
-  }, [user]);
+  }, [user, setValues]);
 
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSave = (event) => {
     event.preventDefault();
-    dispatch(updateUser(formData));
+    dispatch(updateUser(values));
   };
 
   const handleCancel = (event) => {
     event.preventDefault();
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        password: user.password || "",
-      });
-    }
+    setValues({
+      name: user?.name || "",
+      email: user?.email || "",
+      password: user?.password || "",
+    });
   };
 
   const handleLogout = (event) => {
@@ -103,21 +97,19 @@ const ProfilePage = () => {
         <Input
           type="text"
           placeholder="Имя"
-          onChange={handleInputChange}
-          value={formData.name || ""}
+          onChange={handleChange}
+          value={values.name || ""}
           name="name"
         />
         <EmailInput
-          onChange={handleInputChange}
-          value={formData.email || ""}
+          onChange={handleChange}
+          value={values.email || ""}
           name="email"
-          placeholder="E-mail"
         />
         <PasswordInput
-          onChange={handleInputChange}
-          value={formData.password || ""}
+          onChange={handleChange}
+          value={values.password || ""}
           name="password"
-          placeholder="Пароль"
         />
         <div className={styles.buttonContainer}>
           <Button

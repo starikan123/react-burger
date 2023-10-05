@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,10 +10,13 @@ import {
   resetPassword,
   resetForgotPasswordInitiated,
 } from "../js/services/actions/authActions";
+import { useForm } from "../js/hooks/useForm";
 
 function ResetPasswordPage() {
-  const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
+  const { values, handleChange } = useForm({
+    password: "",
+    token: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,17 +37,9 @@ function ResetPasswordPage() {
     }
   }, [resetPasswordSuccess, forgotPasswordInitiated, navigate, dispatch]);
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleTokenChange = (event) => {
-    setToken(event.target.value);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(resetPassword(password, token));
+    dispatch(resetPassword(values.password, values.token));
   };
 
   return (
@@ -54,16 +49,18 @@ function ResetPasswordPage() {
         <Input
           type={showPassword ? "text" : "password"}
           placeholder="Введите новый пароль"
-          onChange={handlePasswordChange}
-          value={password}
+          onChange={handleChange}
+          value={values.password}
+          name="password"
           icon={showPassword ? "HideIcon" : "ShowIcon"}
           onIconClick={() => setShowPassword(!showPassword)}
         />
         <Input
           type="text"
           placeholder="Введите код из письма"
-          onChange={handleTokenChange}
-          value={token}
+          onChange={handleChange}
+          value={values.token}
+          name="token"
         />
         <Button type="primary" size="medium" htmlType="submit">
           Сохранить

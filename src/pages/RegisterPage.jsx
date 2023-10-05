@@ -7,27 +7,18 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { register, clearError } from "../js/services/actions/authActions";
 import styles from "./RegisterPage.module.css";
+import { useForm } from "../js/hooks/useForm";
 
 function RegisterPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { values, handleChange } = useForm({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [passwordShown, setPasswordShown] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
@@ -35,7 +26,7 @@ function RegisterPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(register(email, password, name));
+    dispatch(register(values.email, values.password, values.name));
   };
 
   const handleLoginRedirect = () => {
@@ -50,20 +41,20 @@ function RegisterPage() {
         <Input
           type="text"
           placeholder="Имя"
-          value={name}
-          onChange={handleNameChange}
+          value={values.name}
+          onChange={handleChange}
         />
         <Input
           type="email"
           placeholder="E-mail"
-          onChange={handleEmailChange}
-          value={email}
+          onChange={handleChange}
+          value={values.email}
         />
         <Input
           type={passwordShown ? "text" : "password"}
           placeholder="Пароль"
-          onChange={handlePasswordChange}
-          value={password}
+          onChange={handleChange}
+          value={values.password}
           icon={passwordShown ? "HideIcon" : "ShowIcon"}
           onIconClick={togglePasswordVisibility}
         />
