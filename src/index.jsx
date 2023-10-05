@@ -4,12 +4,9 @@ import { applyMiddleware, createStore, compose } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import rootReducer from "./js/services/reducers/rootReducer";
-import Api from "./js/utils/api";
 import { HashRouter } from "react-router-dom";
 import App from "./js/components/App/App.jsx";
-import { baseUrl } from "./js/utils/apiUtils";
-
-const api = new Api(baseUrl);
+import api from "./js/utils/api";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -17,7 +14,7 @@ const store = createStore(
   rootReducer,
   composeEnhancers(applyMiddleware(thunk.withExtraArgument(api)))
 );
-//
+
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
