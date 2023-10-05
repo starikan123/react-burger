@@ -14,6 +14,7 @@ import {
   addIngredientToConstructor,
   removeIngredient,
   moveIngredient,
+  clearBurgerConstructor,
 } from "../../services/actions/constructorActions";
 import DraggableConstructorElement from "../DraggableConstructorElement/DraggableConstructorElement";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
@@ -44,8 +45,11 @@ function BurgerConstructor({ onClick }) {
       }
 
       if (isAuthenticated) {
-        dispatch(placeOrder(ingredientIds));
+        await dispatch(placeOrder(ingredientIds));
+
         onClick();
+
+        dispatch(clearBurgerConstructor());
       } else {
         navigate(`/login`);
       }
