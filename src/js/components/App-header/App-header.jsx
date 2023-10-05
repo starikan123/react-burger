@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
   Logo,
   BurgerIcon,
@@ -41,7 +41,9 @@ function AppHeader() {
             </li>
           </ul>
         </nav>
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
         <NavLink
           to="/profile"
           className={({ isActive }) => getLinkClassName(isActive)}
