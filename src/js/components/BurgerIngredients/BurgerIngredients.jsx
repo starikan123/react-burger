@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { addIngredientToConstructor } from "../../services/actions/constructorActions.js";
 import { setIngredientForDetails } from "../../services/actions/ingredientsActions.js";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientsBoard from "../IngredientsBoard/IngredientsBoard.jsx";
@@ -12,22 +10,12 @@ const BurgerIngredients = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleIngredientClick = (ingredient) => {
-    const ingredientWithUniqueId = {
-      ...ingredient,
-      uniqueId: uuidv4(),
-    };
-
-    if (isAuthenticated) {
-      dispatch(addIngredientToConstructor(ingredientWithUniqueId));
-    } else {
-      dispatch(setIngredientForDetails(ingredient));
-      navigate(`/ingredients/${ingredient._id}`, {
-        state: { background: location },
-      });
-    }
+    dispatch(setIngredientForDetails(ingredient));
+    navigate(`/ingredients/${ingredient._id}`, {
+      state: { background: location },
+    });
   };
 
   const bunRef = useRef(null);
