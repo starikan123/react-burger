@@ -114,6 +114,7 @@ function BurgerConstructor({ onClick }) {
           onClick={handleOrderClick}
           type="primary"
           size="large"
+          disabled={!state.bun}
         >
           Оформить заказ
         </Button>
