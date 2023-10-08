@@ -1,18 +1,21 @@
 import React from "react";
 import ingredientStyle from "./IngredientDetails.module.css";
-import ingredientType from "../../utils/types.jsx";
 import { useSelector } from "react-redux";
 
 const IngredientDetails = () => {
-  const currentIngredient = useSelector(
+  const selectedIngredient = useSelector(
     (state) => state.burger.currentIngredient
   );
 
+  if (!selectedIngredient) {
+    return null;
+  }
+
   const { name, calories, proteins, fats, carbohydrates, image } =
-    currentIngredient;
+    selectedIngredient;
 
   return (
-    <>
+    <div className={ingredientStyle.box}>
       <h3
         className={`${ingredientStyle.title} text text_type_main-large pt-10`}
       >
@@ -46,12 +49,8 @@ const IngredientDetails = () => {
           <p className="text text_type_main-default">{carbohydrates}</p>
         </li>
       </ul>
-    </>
+    </div>
   );
-};
-
-IngredientDetails.propTypes = {
-  ingredient: ingredientType.isRequired,
 };
 
 export default IngredientDetails;

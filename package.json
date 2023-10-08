@@ -13,17 +13,21 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.14.0",
+    "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.7",
-    "react-router-dom": "^6.10.0",
+    "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",
     "react-slick": "^0.29.0",
     "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "typescript": "^4.9.5",
+    "universal-cookie": "^4.0.4",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -53,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.4",
     "gh-pages": "^5.0.0"
   }
 }

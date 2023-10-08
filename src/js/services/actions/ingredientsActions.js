@@ -4,6 +4,7 @@ import {
   GET_INGREDIENTS_FAILED,
   SET_CURRENT_INGREDIENT,
   RESET_CURRENT_INGREDIENT,
+  SET_INGREDIENT_FOR_DETAILS,
 } from "./actionTypes";
 
 export const getIngredients = () => (dispatch, getState, api) => {
@@ -31,4 +32,9 @@ export const setCurrentIngredient = (ingredient) => ({
 
 export const resetCurrentIngredient = () => ({
   type: RESET_CURRENT_INGREDIENT,
+});
+
+export const setIngredientForDetails = (ingredient) => ({
+  type: SET_INGREDIENT_FOR_DETAILS,
+  payload: ingredient,
 });

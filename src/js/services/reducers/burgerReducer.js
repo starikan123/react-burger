@@ -5,6 +5,7 @@ import {
   REMOVE_INGREDIENT,
   ADD_BUN_TO_CONSTRUCTOR,
   MOVE_INGREDIENT,
+  CLEAR_BURGER_CONSTRUCTOR,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -33,9 +34,10 @@ export const burgerReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedIngredients: state.selectedIngredients.filter(
-          (ingredient) => ingredient._id !== action.payload
+          (ingredient) => ingredient.uniqueId !== action.payload.uniqueId
         ),
       };
+
     case MOVE_INGREDIENT: {
       const { dragIndex, hoverIndex } = action.payload;
       const newSelectedIngredients = [...state.selectedIngredients];
@@ -46,6 +48,11 @@ export const burgerReducer = (state = initialState, action) => {
 
       return { ...state, selectedIngredients: newSelectedIngredients };
     }
+    case CLEAR_BURGER_CONSTRUCTOR:
+      return {
+        ...initialState,
+      };
+
     default:
       return state;
   }

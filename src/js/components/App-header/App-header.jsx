@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { NavLink, Link } from "react-router-dom";
 import {
   Logo,
   BurgerIcon,
@@ -8,8 +9,8 @@ import {
 import headerStyle from "./App-header.module.css";
 
 function AppHeader() {
-  const getLinkClassName = (props) =>
-    `${headerStyle.headerLink} ${props.isActive ? headerStyle.active : ""} p-5`;
+  const getLinkClassName = (isActive) =>
+    `${headerStyle.headerLink} ${isActive ? headerStyle.active : ""} p-5`;
 
   return (
     <header className={`${headerStyle.header} pt-4 pb-4`}>
@@ -17,7 +18,10 @@ function AppHeader() {
         <nav>
           <ul className={headerStyle.headerLists}>
             <li>
-              <NavLink to="/" className={getLinkClassName} activeClassName="">
+              <NavLink
+                to="/"
+                className={({ isActive }) => getLinkClassName(isActive)}
+              >
                 <BurgerIcon type="primary" />
                 <span className="text text_type_main-default pl-2">
                   Конструктор
@@ -26,9 +30,8 @@ function AppHeader() {
             </li>
             <li>
               <NavLink
-                to="orders"
-                className={getLinkClassName}
-                activeClassName=""
+                to="/orders"
+                className={({ isActive }) => getLinkClassName(isActive)}
               >
                 <ListIcon type="secondary" />
                 <span className="text text_type_main-default pl-2">
@@ -38,8 +41,13 @@ function AppHeader() {
             </li>
           </ul>
         </nav>
-        <Logo />
-        <NavLink to="profile" className={getLinkClassName} activeClassName="">
+        <Link to="/">
+          <Logo />
+        </Link>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) => getLinkClassName(isActive)}
+        >
           <ProfileIcon type="secondary" />
           <span className="text text_type_main-default pl-2">
             Личный кабинет

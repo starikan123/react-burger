@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
-import ingredientType from "../../utils/types";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -13,48 +14,65 @@ import {
   addIngredientToConstructor,
   removeIngredient,
   moveIngredient,
+  clearBurgerConstructor,
 } from "../../services/actions/constructorActions";
 import DraggableConstructorElement from "../DraggableConstructorElement/DraggableConstructorElement";
 import burgerConstructorsStyle from "./BurgerConstructor.module.css";
 
 function BurgerConstructor({ onClick }) {
-  console.log("Rendering BurgerConstructor");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const state = useSelector((state) => state.burger);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [, dropRef] = useDrop({
     accept: "ingredient",
     drop: (item) => {
-      console.log("Dropped item", item);
-      console.log("Dispatching: addIngredientToConstructor", item.ingredient);
-      dispatch(addIngredientToConstructor(item.ingredient));
+      const ingredientWithUniqueId = {
+        ...item.ingredient,
+        uniqueId: uuidv4(),
+      };
+      dispatch(addIngredientToConstructor(ingredientWithUniqueId));
     },
   });
 
   const handleOrderClick = async () => {
     try {
       const ingredientIds = state.selectedIngredients.map((i) => i._id);
-      console.log("Dispatching: placeOrder", ingredientIds);
-      dispatch(placeOrder(ingredientIds));
-      onClick();
+
+      if (!ingredientIds || ingredientIds.length === 0) {
+        return;
+      }
+
+      if (isAuthenticated) {
+        await dispatch(placeOrder(ingredientIds));
+
+        onClick();
+
+        dispatch(clearBurgerConstructor());
+      } else {
+        navigate(`/login`);
+      }
     } catch (error) {
       console.error("Could not create order:", error);
     }
   };
 
-  const handleRemoveClick = (ingredientId) => {
-    console.log("Dispatching: removeIngredient", ingredientId);
-    dispatch(removeIngredient(ingredientId));
+  const handleRemoveClick = (uniqueId) => {
+    dispatch(removeIngredient(uniqueId));
   };
 
   const renderBurgerElement = (ingredient, type, index) => (
-    <div className="ml-8 pl-4 pr-4" key={`${ingredient._id}-${type}-${index}`}>
+    <div
+      className="ml-8 pl-4 pr-4"
+      key={`${ingredient.uniqueId}-${type}-${index}`}
+    >
       <ConstructorElement
         type={type}
         isLocked={ingredient.type === "bun"}
         handleClose={
           ingredient.type !== "bun"
-            ? () => handleRemoveClick(ingredient._id)
+            ? () => handleRemoveClick(ingredient.uniqueId)
             : undefined
         }
         text={`${ingredient.name} (${type === "top" ? "верх" : "низ"})`}
@@ -79,7 +97,7 @@ function BurgerConstructor({ onClick }) {
       <ul className={`${burgerConstructorsStyle.lists} pl-4 pr-4`}>
         {state.selectedIngredients.map((ingredient, index) => (
           <DraggableConstructorElement
-            key={`${ingredient._id}-${index}`}
+            key={ingredient.uniqueId}
             index={index}
             moveIngredient={(dragIndex, hoverIndex) =>
               dispatch(moveIngredient(dragIndex, hoverIndex))
@@ -95,7 +113,13 @@ function BurgerConstructor({ onClick }) {
           <p className="text text_type_digits-medium">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button onClick={handleOrderClick} type="primary" size="large">
+        <Button
+          htmlType="button"
+          onClick={handleOrderClick}
+          type="primary"
+          size="large"
+          disabled={!state.bun}
+        >
           Оформить заказ
         </Button>
       </div>
@@ -105,7 +129,6 @@ function BurgerConstructor({ onClick }) {
 
 BurgerConstructor.propTypes = {
   onClick: PropTypes.func.isRequired,
-  ingredients: PropTypes.arrayOf(ingredientType.isRequired).isRequired,
 };
 
 export default BurgerConstructor;
