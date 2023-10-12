@@ -30,6 +30,9 @@ import {
   getUser,
   updateToken,
 } from "../../services/actions/authActions";
+import FeedPage from "../FeedPage/FeedPage";
+import OrdersHistory from "../OrderHistory/OrderHistory";
+import OrderItem from "../OrderItem/OrderItem";
 
 function useModal(openAction, closeAction) {
   const dispatch = useDispatch();
@@ -135,6 +138,19 @@ function App() {
                 </ProtectedRouteElement>
               }
             />
+            <Route path="/feed" element={<FeedPage />}>
+              <Route path=":id" element={<OrderItem />} />{" "}
+            </Route>
+            <Route
+              path="/profile/orders"
+              element={
+                <ProtectedRouteElement>
+                  <OrdersHistory />
+                </ProtectedRouteElement>
+              }
+            >
+              <Route path=":id" element={<OrderItem />} />{" "}
+            </Route>
 
             <Route
               path="/"

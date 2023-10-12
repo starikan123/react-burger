@@ -30,7 +30,7 @@ function AppHeader() {
             </li>
             <li>
               <NavLink
-                to="/orders"
+                to="/feed"
                 className={({ isActive }) => getLinkClassName(isActive)}
               >
                 <ListIcon type="secondary" />
