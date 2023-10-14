@@ -7,18 +7,21 @@ function OrderStats() {
   const ordersToday = useSelector((store) => store.ws.totalToday);
   const orders = useSelector((store) => store.ws.orders);
 
-  const doneOrdersIds = useMemo(() => {
-    return orders
+  const { doneOrdersIds, createdOrderIds } = useMemo(() => {
+    const done = orders
       .filter((order) => order.status === "done")
       .map((order) => order.number)
       .slice(0, 10);
-  }, [orders]);
 
-  const createdOrderIds = useMemo(() => {
-    return orders
+    const created = orders
       .filter((order) => order.status === "created")
       .map((order) => order.number)
       .slice(0, 10);
+
+    return {
+      doneOrdersIds: done,
+      createdOrderIds: created,
+    };
   }, [orders]);
 
   const isError = useMemo(() => {

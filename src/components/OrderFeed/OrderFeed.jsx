@@ -24,7 +24,7 @@ function OrderFeed({ feedPersonal, wsUrl }) {
     };
   }, [dispatch, wsUrl]);
 
-  const renderOrderCards = useMemo(() => {
+  const renderOrderCards = () => {
     return sortedOrders.map((order, index) => {
       const ingredients = order.ingredients.map((ingredientId) => {
         const ingredientData = allIngredients.find(
@@ -99,13 +99,13 @@ function OrderFeed({ feedPersonal, wsUrl }) {
         </Link>
       );
     });
-  }, [feedPersonal, sortedOrders, allIngredients, location]);
+  };
 
   return (
     <div className={`${className} ${styles.customScroll}`}>
-      {renderOrderCards}
+      {renderOrderCards()}
     </div>
   );
 }
 
-export default OrderFeed;
+export default React.memo(OrderFeed);
