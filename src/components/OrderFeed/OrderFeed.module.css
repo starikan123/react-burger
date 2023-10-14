@@ -1,0 +1,140 @@
+.feedGeneral {
+  max-width: 600px;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  row-gap: 16px;
+  max-height: 852px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.feedPersonal {
+  display: flex;
+  max-width: 1000px;
+  flex-grow: 1;
+  flex-direction: column;
+  row-gap: 16px;
+  max-height: 852px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.orderCard {
+  display: flex;
+  width: 100%;
+  background-color: rgba(28, 28, 33, 1);
+  border-radius: 40px;
+}
+
+.orderDetails {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  width: 100%;
+  row-gap: 24px;
+}
+
+.orderTechDetails {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orderVisualisation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orderIngredients {
+  display: flex;
+}
+
+.orderCost {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.ingredientsList {
+  display: flex;
+  list-style: none;
+  padding-left: 16px;
+  margin: 0;
+}
+
+.ingredient {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: rgba(19, 19, 22, 1);
+  border-image-source: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -30px 0 0 -30px;
+}
+
+.ingredientsExtraText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+.ingredientBorder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: -16px;
+  position: relative;
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #f35 0%,
+    #43e 100%
+  );
+}
+
+.ingredientBorderDarkened {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: -16px;
+  position: relative;
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    rgba(243, 51, 51, 1) 50%,
+    rgba(67, 227, 227, 1) 100%
+  );
+}
+
+.orderLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.orderLink:visited {
+  color: inherit;
+}
+
+.customScroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 31, 42, 0.6) rgba(31, 31, 42, 0.2);
+  overflow-y: scroll;
+}
+
+.customScroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.customScroll::-webkit-scrollbar-track {
+  background: rgba(31, 31, 42, 0.2);
+}
+
+.customScroll::-webkit-scrollbar-thumb {
+  background-color: rgba(31, 31, 42, 0.6);
+  border-radius: 10px;
+}

@@ -1,0 +1,47 @@
+.constructorSection {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.ingredientItem {
+  display: flex;
+  max-width: 568px;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.scrollableIngredientList {
+  overflow-y: auto;
+}
+
+.fixedIngredientList {
+  display: flex;
+  flex-direction: column;
+  max-height: 770px;
+  padding-inline-start: 0px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+}
+
+.ingredientThumbnail {
+  max-width: 80px;
+  max-height: 40px;
+}
+
+.ingredientTitle {
+  max-height: 48px;
+  max-width: 254px;
+}
+
+.orderSummary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.orderPrice {
+  display: flex;
+  align-items: center;
+}
