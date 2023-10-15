@@ -1,0 +1,19 @@
+.profileSection {
+  display: flex;
+  flex-grow: 1;
+}
+
+.profileForm {
+  padding-top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.saveButton {
+  margin-bottom: 20px;
+}
+
+.cancelButton {
+  padding-left: 24px;
+}

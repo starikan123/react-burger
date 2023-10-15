@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  align-items: center;
+  min-width: 720px;
+  min-height: 539px;
+  background-color: #1c1c21;
+  border-radius: 40px;
+  z-index: 11;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  line-height: 60px;
+}
+
+.nutritionDataWrapper {
+  display: flex;
+  justify-content: space-evenly;
+  column-gap: 20px;
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+.nutritionData {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.nutritionLabel {
+  text-align: center;
+}
+
+.nutritionValue {
+  text-align: center;
+}

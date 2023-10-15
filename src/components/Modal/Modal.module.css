@@ -1,0 +1,26 @@
+.modal {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-width: 100%;
+  min-height: 100%;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  z-index: 13;
+  top: 0;
+}
+
+.closeIcon {
+  display: flex;
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  z-index: 15;
+  cursor: pointer;
+}
+
+.modalContent {
+  position: relative;
+}

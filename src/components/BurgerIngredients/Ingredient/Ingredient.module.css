@@ -1,0 +1,35 @@
+.ingredient {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 240px;
+  box-sizing: content-box;
+  cursor: grab;
+  text-decoration: none;
+}
+
+.ingredientName {
+  text-align: center;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.ingredientPrice {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.ingredientLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.ingredientLink:visited {
+  color: inherit;
+}

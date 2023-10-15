@@ -1,0 +1,32 @@
+.profileSection {
+  display: flex;
+  justify-content: center;
+}
+
+.navElement {
+  padding-left: 20px;
+  max-width: 320px;
+  width: 100%;
+}
+
+.leftNav {
+  list-style: none;
+  padding-left: 0;
+  cursor: pointer;
+  padding-top: 120px;
+}
+
+.navItem {
+  line-height: 64px;
+  height: 64px;
+  cursor: pointer;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link:visited {
+  color: inherit;
+}

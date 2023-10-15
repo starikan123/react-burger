@@ -1,0 +1,11 @@
+.feedSection {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+}
+
+.feedContent {
+  display: flex;
+  column-gap: 60px;
+  padding-top: 20px;
+}

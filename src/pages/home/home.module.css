@@ -1,0 +1,7 @@
+.homepage {
+  display: flex;
+  column-gap: 40px;
+  justify-content: space-between;
+  max-height: 1000px;
+  padding-left: 20px;
+}

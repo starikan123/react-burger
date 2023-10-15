@@ -1,0 +1,20 @@
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.passwordRecovery {
+  display: flex;
+  align-items: center;
+}
+
+.signInContainer {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  text-decoration: none;
+}
