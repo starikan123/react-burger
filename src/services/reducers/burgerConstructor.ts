@@ -1,16 +1,29 @@
 import {
+  TBurgerConstructorActions,
   REMOVE_INGREDIENT_FROM_CONSTRUCTOR,
   REORDER_INGREDIENT,
   CLEAR_CONSTRUCTOR,
 } from "../actions/burgerConstructor";
-import { ADD_INGREDIENT_TO_CONSTRUCTOR } from "../actions/burgerIngredients";
+import {
+  TBurgerIngredientsActions,
+  ADD_INGREDIENT_TO_CONSTRUCTOR,
+  IIngredient,
+} from "../actions/burgerIngredients";
+
 import { v4 as uuidv4 } from "uuid";
 
-const initialState = {
+interface IBurgerConstructorState {
+  constructorIngredients: Array<IIngredient & { uniqueId: string }>;
+}
+
+const initialState: IBurgerConstructorState = {
   constructorIngredients: [],
 };
 
-export const burgerConstructorReducer = (state = initialState, action) => {
+export const burgerConstructorReducer = (
+  state = initialState,
+  action: TBurgerConstructorActions | TBurgerIngredientsActions
+): IBurgerConstructorState => {
   switch (action.type) {
     case ADD_INGREDIENT_TO_CONSTRUCTOR:
       if (action.ingredient.type === "bun") {
